@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	
+	<head>
+		<meta charset="UTF-8">
+		<title>Insert title here</title>
+	</head>
+	
+
+	
+	<body>
+		
+		<!-- エネミーゾーン -->
+		<h3 th:text="#{enemy.name}"></h3>
+		<h3 th:each="entry:${session.battle.monsterDataMap}">
+			<div th:unless="${entry.value.survival == 0}">
+				<a th:text="${entry.value.name}"></a>
+				<!-- 以下はテスト処理のため表示 -->
+				<a th:text="${entry.value.currentHp}"></a>
+				<a th:text="${entry.value.currentATK}"></a>
+				<a th:text="${entry.value.currentDEF}"></a>
+			</div>
+		</h3>
+		
+
+		<!-- プレイヤーゾーン -->
+		<table border="1">
+			<tr>
+				<th>名前</th>
+				<th>HP</th>
+				<th>MP</th>
+				<th>状態</th>
+				<div th:unless=="${session.mode == 'battle'}">
+					<div th:unless=="${session.mode == 'end'}">
+						<th>攻撃</th>
+						<th>魔法</th>
+						<th>特技</th>
+						<th>防御</th>
+					</div>
+				</div>
+				<th>選択中の行動</th>
+				<th>対象</th>
+			</tr>
+			<tr th:each="entry:${session.battle.partyMap}">
+				<td>
+					<a th:text="${entry.value.name}"></a>
+				</td>
+				<td>
+					<a th:text="${entry.value.currentHp}"></a>
+					<a>/</a>
+					<a th:text="${entry.value.maxHP}"></a>
+				</td>
+				<td>
+					<a th:text="${entry.value.currentMp}"></a>
+					<a>/</a>
+					<a th:text="${entry.value.maxMP}"></a>
+				</td>
+				<td>
+					<div th:each="st:${entry.value.statusSet}">
+						<a th:text="${st.name}"></a>
+					</div>
+				</td>
+				<div th:unless=="${session.mode == 'battle'}">
+					<div th:unless=="${session.mode == 'end'}">
+						<form th:action="@{/}" method="get">
+							<td>
+								<div th:unless="${entry.value.survival == 0}">
+									<button type="submit" th:formaction="@{/attack/__${entry.key}__}" th:text="攻撃"></button>
+								</div>
+							</td>
+							<td>
+								<div th:unless="${entry.value.survival == 0}">
+									<button type="submit" th:formaction="@{/magic/__${entry.key}__}" th:text="魔法"></button>
+								</div>
+							</td>
+							<td>
+								<div th:unless="${entry.value.survival == 0}">
+									<button type="submit" th:formaction="@{/skill/__${entry.key}__}" th:text="特技"></button>
+								</div>
+							</td>
+							<td>
+								<div th:unless="${entry.value.survival == 0}">
+									<button type="submit" th:formaction="@{/defense/__${entry.key}__}" th:text="防御"></button>
+								</div>
+							</td>
+						</form>
+					</div>
+				</div>
+					<td>
+						<a th:text="${session.battle.targetMap.get(entry.key).skillName}"></a>
+					</td>
+					<td>
+						<a th:text="${session.battle.targetMap.get(entry.key).selectionName}"></a>
+					</td>
+
+			</tr>
+		</table>
+		<!-- プレイヤーゾーンはここまで -->
+		
+		<!-- メッセージ表示エリア -->
+		<div th:if="${session.mode == 'battle'}">
+			<ul th:each="me:${session.battle.mesageList}">
+				<li>
+					<a th:text="${me}"></a>
+				</li>
+			</ul>
+			
+			<form th:action="@{/}" method="get">
+				<div>
+					<button type="submit" th:formaction="@{/next}" th:text="次へ"></button>
+				</div>
+			</form>
+		</div>
+		
+		<div th:if="${session.mode == 'end'}">
+			<ul th:each="me:${session.battle.mesageList}">
+				<li>
+					<a th:text="${me}"></a>
+				</li>
+			</ul>
+			
+			<form th:action="@{/}" method="get">
+				<div>
+					<button type="submit" th:formaction="@{/end}" th:text="次へ"></button>
+				</div>
+			</form>
+		</div>
+			
+		
+		<!-- 魔法選択エリア -->
+		<div th:if="${session.mode == 'magic'}">
+			
+			<table border="1">
+				<form th:action="@{/}" method="get">
+					<tr>
+						<th>カテゴリー</th>
+					</tr>
+					<tr>
+						<td>
+							<a th:href="@{/magic/__${key}__}" th:text="すべて"></a>
+						</td>
+						<td>
+							<a th:href="@{/magic/attack/__${key}__}" th:text="攻撃魔法"></a>
+						</td>
+						<td>
+							<a th:href="@{/magic/recovery/__${key}__}" th:text="回復魔法"></a>
+						</td>				
+						<td>
+							<a th:href="@{/magic/buff/__${key}__}" th:text="補助魔法"></a>
+						</td>
+						<td>
+							<a th:href="@{/magic/debuff/__${key}__}" th:text="妨害魔法"></a>
+						</td>
+					</tr>
+				</form>
+			</table>
+			
+			
+			<table border="1">
+				<form th:action="@{/}" method="get">
+					<tr>
+						<th>魔法</th>
+						<th>消費MP</th>
+						<th>効果説明</th>
+					</tr>
+					<tr th:each="ma:${magicList}">
+						<td>
+							<div th:unless="${ma.id == 26}">
+								<a th:href="@{/magic/add/__${ma.id}__}" th:text="${ma.name}"></a>
+							</div>
+							<div th:if="${ma.id == 26}">
+								<a th:text="${ma.name}"></a>
+							</div>
+						</td>
+						<td>
+							<a th:text="${ma.mp}"></a>
+						</td>
+						<td>
+							<a th:text="${ma.text}"></a>
+						</td>
+					</tr>
+				</form>
+			</table>
+		</div>
+		<!-- 魔法選択エリアはここまで -->
+		
+		
+		<!-- 特技選択エリア -->
+		<div th:if="${session.mode == 'skill'}">
+			
+			<table border="1">
+				<form th:action="@{/}" method="get">
+					<tr>
+						<th>カテゴリー</th>
+					</tr>
+					<tr>
+						<td>
+							<a th:href="@{/skill/__${key}__}" th:text="すべて"></a>
+						</td>
+						<td>
+							<a th:href="@{/skill/attack/__${key}__}" th:text="攻撃"></a>
+						</td>
+						<td>
+							<a th:href="@{/skill/recovery/__${key}__}" th:text="回復"></a>
+						</td>				
+						<td>
+							<a th:href="@{/skill/buff/__${key}__}" th:text="補助"></a>
+						</td>
+						<td>
+							<a th:href="@{/skill/debuff/__${key}__}" th:text="妨害"></a>
+						</td>
+					</tr>
+				</form>
+			</table>
+			
+			
+			<table border="1">
+				<form th:action="@{/}" method="get">
+					<tr>
+						<th>特技</th>
+						<th>消費MP</th>
+						<th>効果説明</th>
+					</tr>
+					<tr th:each="sk:${skillList}">
+						<td>
+							<div th:unless="${sk.id == 2}">
+								<a th:href="@{/skill/add/__${sk.id}__}" th:text="${sk.name}"></a>
+							</div>
+							<div th:if="${sk.id == 2}">
+								<a th:text="${sk.name}"></a>
+							</div>
+						</td>
+						<td>
+							<a th:text="${sk.mp}"></a>
+						</td>
+						<td>
+							<a th:text="${sk.text}"></a>
+						</td>
+					</tr>
+				</form>
+			</table>
+		</div>
+		<!-- 特技選択エリアはここまで -->
+		
+		
+		
+		<!-- 行動対象選択エリア -->
+		<!-- 通常攻撃  -->
+		<div th:if="${session.mode == 'attackTargetMonster'}">
+			<table border="1">
+				<form th:action="@{/}" method="get">
+					<tr>
+						<th>対象選択</th>
+					</tr>
+					<tr th:each="entry:${session.battle.monsterDataMap}">
+						<td th:unless="${entry.value.survival == 0}">
+							<a th:href="@{/target/attack/monster/__${entry.key}__}" th:text="${entry.value.name}"></a>
+						</td>
+					</tr>
+				</form>
+			</table>
+		</div>
+		
+		<!-- 味方への魔法  -->
+		<div th:if="${session.mode == 'targetAllyMagic'}">
+			<table border="1">
+				<form th:action="@{/}" method="get">
+					<tr>
+						<th>対象選択</th>
+					</tr>
+					<tr th:each="entry:${session.battle.partyMap}">
+						<td th:unless="${entry.value.survival == 0}">
+							<a th:href="@{/target/magic/ally/__${entry.key}__}" th:text="${entry.value.name}"></a>
+						</td>
+					</tr>
+				</form>
+			</table>
+		</div>
+		
+		<div th:if="${session.mode == 'targetDeathAllyMagic'}">
+			<table border="1">
+				<form th:action="@{/}" method="get">
+					<tr>
+						<th>対象選択</th>
+					</tr>
+					<tr th:each="entry:${session.battle.partyMap}">
+						<td th:if="${entry.value.survival == 0}">
+							<a th:href="@{/target/magic/ally/__${entry.key}__}" th:text="${entry.value.name}"></a>
+						</td>
+					</tr>
+				</form>
+			</table>
+		</div>
+		
+		<!-- 魔法攻撃  -->
+		<div th:if="${session.mode == 'targetMonsterMagic'}">
+			<table border="1">
+				<form th:action="@{/}" method="get">
+					<tr>
+						<th>対象選択</th>
+					</tr>
+					<tr th:each="entry:${session.battle.monsterDataMap}">
+						<td th:unless="${entry.value.survival == 0}">
+							<a th:href="@{/target/magic/monster/__${entry.key}__}" th:text="${entry.value.name}"></a>
+						</td>
+					</tr>
+				</form>
+			</table>
+		</div>
+		
+		<div th:if="${session.mode == 'targetGroupNameMonsterMagic'}">
+			<table border="1">
+				<form th:action="@{/}" method="get">
+					<tr>
+						<th>対象選択</th>
+					</tr>
+					<tr th:each="name:${session.battle.enemyNameList}">
+						<td>
+							<a th:href="@{/target/magic/monsterGroup/__${name}__}" th:text="${name}"></a>
+						</td>
+					</tr>
+				</form>
+			</table>
+		</div>
+		
+		<!-- 味方への特技  -->
+		<div th:if="${session.mode == 'targetAllySkill'}">
+			<table border="1">
+				<form th:action="@{/}" method="get">
+					<tr>
+						<th>対象選択</th>
+					</tr>
+					<tr th:each="entry:${session.battle.partyMap}">
+						<td th:unless="${entry.value.survival == 0}">
+							<a th:href="@{/target/skill/ally/__${entry.key}__}" th:text="${entry.value.name}"></a>
+						</td>
+					</tr>
+				</form>
+			</table>
+		</div>
+		
+		<div th:if="${session.mode == 'targetDeathAllySkill'}">
+			<table border="1">
+				<form th:action="@{/}" method="get">
+					<tr>
+						<th>対象選択</th>
+					</tr>
+					<tr th:each="entry:${session.battle.partyMap}">
+						<td th:if="${entry.value.survival == 0}">
+							<a th:href="@{/target/skill/ally/__${entry.key}__}" th:text="${entry.value.name}"></a>
+						</td>
+					</tr>
+				</form>
+			</table>
+		</div>
+		
+		
+		<!-- 攻撃特技  -->
+		<div th:if="${session.mode == 'targetMonsterSkill'}">
+			<table border="1">
+				<form th:action="@{/}" method="get">
+					<tr>
+						<th>対象選択</th>
+					</tr>
+					<tr th:each="entry:${session.battle.monsterDataMap}">
+						<td th:unless="${entry.value.survival == 0}">
+							<a th:href="@{/target/skill/monster/__${entry.key}__}" th:text="${entry.value.name}"></a>
+						</td>
+					</tr>
+				</form>
+			</table>
+		</div>
+		
+		<div th:if="${session.mode == 'targetGroupNameMonsterSkill'}">
+			<table border="1">
+				<form th:action="@{/}" method="get">
+					<tr>
+						<th>対象選択</th>
+					</tr>
+					<tr th:each="name:${session.battle.enemyNameList}">
+						<td>
+							<a th:href="@{/target/skill/monsterGroup/__${name}__}" th:text="${name}"></a>
+						</td>
+					</tr>
+				</form>
+			</table>
+		</div>
+		<!-- 行動対象選択エリアはここまで -->
+		
+		
+		
+		<!-- 戦闘開始ボタン -->
+		<div th:unless="${session.mode == 'end'}">
+			<div th:unless="${session.mode == 'battle'}">
+				<div th:unless="${session.mode == 'result'}">
+					<form th:action="@{/}" method="get">
+						<div>
+							<button type="submit" th:formaction="@{/start}" th:text="戦闘開始"></button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<div th:if="${session.mode == 'result'}">
+			<form th:action="@{/}" method="get">
+				<div>
+					<ul th:each="me:${session.battle.mesageList}">
+						<li>
+							<a th:text="${me}"></a>
+						</li>
+					</ul>
+				</div>
+				<div>
+					<button type="submit" th:formaction="@{/}" th:text="TOPへ"></button>
+				</div>
+			</form>
+		</div>
+		
+	</body>
+
+</html>
