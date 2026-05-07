@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(.\\\\gradlew.bat bootRun)",
+      "PowerShell(.\\\\gradlew.bat test --console=plain)"
+    ]
+  }
+}
