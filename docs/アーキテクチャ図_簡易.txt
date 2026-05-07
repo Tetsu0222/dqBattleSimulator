@@ -1,0 +1,26 @@
+
+# 戦闘の流れ
+Battle ⇒ Battle/Support ⇒ Battle.Target ⇒ Action
+
+# Battle
+- 戦闘ロジック
+  - Battle.java
+- キャラクターデータ
+  - AllyData.java
+- モンスターデータ
+  - MonsterData.java
+- 対象選択
+  - Target.java
+    - 自身の行動と対象別に計算ロジックを変えている。
+    - かなり冗長でテストできるが、物量を要する。
+      - 戦闘ロジックへ切り出して、ストラテジーパターンにする。
+
+# Battle/Support
+BattleSupportAttack.java
+
+## Action
+- Attack.java
+  - ファイル名とメソッド名を変えたい
+  -
+
+----

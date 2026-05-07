@@ -26,7 +26,6 @@ public class Target {
 
 	//通常攻撃
 	public Target( MonsterData monsterData , Integer myKeys , Integer key ) {
-		
 		this.skillName      = "通常攻撃";
 		this.selectionName  = monsterData.getName();
 		this.selectionId    = key;
@@ -40,7 +39,6 @@ public class Target {
 	
 	//味方への魔法
 	public Target( AllyData receptionAllyData , Integer myKeys , Integer key , Magic magic ) {
-		
 		this.skillName      = magic.getName();
 		this.selectionName  = receptionAllyData.getName();
 		this.selectionId    = key;
@@ -53,7 +51,6 @@ public class Target {
 	
 	//味方への全体魔法
 	public Target( Map<Integer,AllyData> partyMap , Set<Integer> targetSetAlly , Integer myKeys , Magic magic , int i ) {
-		
 		this.skillName      = magic.getName();
 		this.selectionName  = "味方全体";
 		this.executionId    = myKeys;
@@ -65,7 +62,6 @@ public class Target {
 	
 	//攻撃魔法
 	public Target( MonsterData monsterData , Integer myKeys , Integer key , Magic magic ) {
-		
 		this.skillName      = magic.getName();
 		this.selectionName  = monsterData.getName();
 		this.selectionId    = key;
@@ -78,7 +74,6 @@ public class Target {
 	
 	//グループ攻撃魔法
 	public Target( String groupName , Integer myKeys , Magic magic ) {
-		
 		this.skillName      = magic.getName();
 		this.selectionName  = groupName + "グループ";
 		this.executionId    = myKeys;
@@ -91,7 +86,6 @@ public class Target {
 	
 	//全体攻撃魔法
 	public Target( Map<Integer,MonsterData> monsterDataMap , Set<Integer> targetSetEnemy , Integer myKeys , Magic magic ) {
-		
 		this.skillName      = magic.getName();
 		this.selectionName  = "敵全体";
 		this.executionId    = myKeys;
@@ -103,7 +97,6 @@ public class Target {
 	
 	//味方への特技
 	public Target( AllyData receptionAllyData , Integer myKeys , Integer key , Skill skill ) {
-		
 		this.skillName      = skill.getName();
 		this.selectionName  = receptionAllyData.getName();
 		this.selectionId    = key;
@@ -116,7 +109,6 @@ public class Target {
 	
 	//味方への全体特技
 	public Target( Map<Integer,AllyData> partyMap , Set<Integer> targetSetAlly , Integer myKeys , Skill skill , int i ) {
-		
 		this.skillName      = skill.getName();
 		this.selectionName  = "味方全体";
 		this.executionId    = myKeys;
@@ -128,7 +120,6 @@ public class Target {
 	
 	//攻撃特技
 	public Target( MonsterData monsterData , Integer myKeys , Integer key , Skill skill ) {
-		
 		this.skillName      = skill.getName();
 		this.selectionName  = monsterData.getName();
 		this.selectionId    = key;
@@ -141,7 +132,6 @@ public class Target {
 	
 	//グループ攻撃魔法
 	public Target( String groupName , Integer myKeys , Skill skill ) {
-		
 		this.skillName      = skill.getName();
 		this.selectionName  = groupName + "グループ";
 		this.executionId    = myKeys;
@@ -154,7 +144,6 @@ public class Target {
 	
 	//全体攻撃特技
 	public Target( Map<Integer,MonsterData> monsterDataMap , Set<Integer> targetSetEnemy , Integer myKeys , Skill skill ) {
-		
 		this.skillName      = skill.getName();
 		this.selectionName  = "敵全体";
 		this.executionId    = myKeys;
@@ -166,7 +155,6 @@ public class Target {
 	
 	//防御選択時の処理
 	public Target( Integer myKeys , String skillName ) {
-		
 		this.skillName     = skillName;
 		this.selectionName = "";
 		this.selectionId   = 0;
@@ -178,7 +166,6 @@ public class Target {
 	
 	//死亡時
 	public Target( Integer myKeys ) {
-		
 		this.skillName     = "";
 		this.selectionName = "";
 		this.selectionId   = 0;

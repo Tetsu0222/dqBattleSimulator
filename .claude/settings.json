@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "PowerShell(.\\\\gradlew.bat bootRun)",
-      "PowerShell(.\\\\gradlew.bat test --console=plain)"
+      "PowerShell(.\\\\gradlew.bat test --console=plain)",
+      "Bash(gh repo *)",
+      "PowerShell(gh repo view --json name,description,url)"
     ]
   }
 }
