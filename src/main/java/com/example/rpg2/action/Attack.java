@@ -26,10 +26,10 @@ public class Attack implements TaregetEnemyAction{
 	private String getNotEnoughMpMessage;
 	private boolean isNotEnoughMp;
 	
-	
+	//TODO:テストできる。
 	public Attack( AllyData allyData ) {
 		this.allyData = allyData;
-		this.stratMessage =  allyData.getName() + "の攻撃!!!";
+		this.stratMessage =  allyData.getName() + "の攻撃!!!"; //TODO:定数化したい。
 	}
 
 	//通常攻撃
@@ -106,8 +106,4 @@ public class Attack implements TaregetEnemyAction{
 		// TODO 自動生成されたメソッド・スタブ
 		
 	}
-
-
-
-
 }
