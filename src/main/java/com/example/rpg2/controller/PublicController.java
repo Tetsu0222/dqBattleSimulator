@@ -132,11 +132,9 @@ public class PublicController {
 	@GetMapping( "/attack/{key}" )
 	public ModelAndView attack( @PathVariable( name = keys ) int key ,
 								ModelAndView mv ) {
-		
 		mv.setViewName( BattleScreen );
 		myKeys = key;
 		session.setAttribute( ScreenMode , NormalAttack );
-		
 		return mv;
 		
 	}
@@ -146,14 +144,12 @@ public class PublicController {
 	@GetMapping( "/target/attack/monster/{key}" )
 	public ModelAndView attackTargetMonster( @PathVariable( name = keys ) int key ,
 											 ModelAndView mv ) {
-		
 		mv.setViewName( BattleScreen );
 		Battle battle = (Battle)session.getAttribute( BattleObject );
 		battle.selectionAttack( myKeys , key );
-		
 		session.setAttribute( BattleObject , battle );
 		session.setAttribute( ScreenMode , BeforeTurn );
-		
+
 		return mv;
 	}
 	

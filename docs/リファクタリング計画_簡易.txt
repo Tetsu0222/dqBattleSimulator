@@ -1,0 +1,34 @@
+# Step1: PublicController.java から戦闘進行ロジックを分離
+
+## ねらい
+turnAction / isPossible は「ターン進行のフロー制御」というドメインロジックであり、
+Controllerに居る合理性がない。これをService層に切り出すことで、
+Controllerは「リクエストを受けてServiceを呼び、結果をビューに渡す」だけの薄い層に近づける。
+
+## Step1-A: テストの作成（安全網の確保）
+今回のテストは「ゴールデンマスター」ではなく「構造テスト」として位置づける。
+理由：乱数が絡むため値の完全凍結は別途準備（乱数のシード注入化）が必要であり、
+Step1の段階ではそこまで踏み込まない。ゴールデンマスターはStep2以降で本格導入する。
+
+検証観点:
+- 各エンドポイントが例外を投げない
+- ViewName が期待通り
+- Model / セッションに必要なキーが揃っている
+- 出力される値そのものの比較は行わない（Random無視可）
+
+## Step1-B: リファクタリング実施
+### (i) 詳細計画
+- 切り出し先クラスの仮称: BattleProgressService
+- 責務: 戦闘の1ステップ進行（行動実行 / 終了判定 / ターン終了処理）
+- メソッド構成（仮）: progressTurn(...) が ProgressResult を返す
+- Controllerは ProgressResult を受けてセッション操作とビュー指定のみ行う
+
+### (ii) 実装
+- BattleProgressService 新規作成
+- turnAction / isPossible のロジックを移植
+- PublicController から呼び出すように差し替え
+- Controllerフィールド myKeys / turnqueue の扱いを再検討（Service側に持たせるかBattleに寄せるか）
+
+### (iii) 確認
+- Step1-A のテストが緑のまま通ることを確認
+- 手動での動作確認（戦闘1試合通しで挙動が変わっていないこと）
