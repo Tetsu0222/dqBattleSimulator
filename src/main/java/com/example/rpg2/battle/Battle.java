@@ -57,7 +57,10 @@ public class Battle {
 	//グループ攻撃用のセット
 	private List<String> enemyNameList;
 	private List<String> allyNameList;
-	
+
+	//経過ターン数
+	private int turnCount = 1;
+
 	Random random = new Random();
 	
 	private BattleSupportAttack   battleSupportAttack;

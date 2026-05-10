@@ -59,27 +59,24 @@ public class PublicController {
 	private Queue<Integer> turnqueue;
 	private List<String> allyNameList = new ArrayList<>();
 	private List<String> enemyNameList = new ArrayList<>();
-	
-	private int turnCount;
-	
-	
+
+
 	//TOP画面に対応
 	@GetMapping( "/" )
 	public ModelAndView Index( ModelAndView mv ) {
-		
-		mv.setViewName( TopMenu );
-		
+
+		mv.setViewName(TopMenu);
+
 		//プレイアブルキャラクターとエネミーキャラクターの選択肢を提示
 		List<Ally>    allyList    = allyRepository.findAll();
 		List<Monster> monsterList = monsterRepository.findAll();
 
-		mv.addObject( PartyMember    , allyList    );
+		mv.addObject( PartyMember , allyList    );
 		mv.addObject( EnemyMember , monsterList );
-		
+
 		session.invalidate();
-		this.turnCount = 1;
 		createCharacterSet.initialize();
-		
+
 		return mv;
 	}
 	
@@ -197,7 +194,7 @@ public class PublicController {
 		
 		//ターンの最初に発動する効果を処理
 		battle.startSkill();
-		battle.getMesageList().add( turnCount + messageSource.getMessage( "turn.start" , null , locale ) );
+		battle.getMesageList().add( battle.getTurnCount() + messageSource.getMessage( "turn.start" , null , locale ) );
 		session.setAttribute( BattleObject , battle );
 		session.setAttribute( ScreenMode   , TurnProgression );
 
@@ -280,8 +277,8 @@ public class PublicController {
 				
 				//ターン終了時に発動する処理
 				battle.endSkill();
-				battle.getMesageList().add( turnCount + messageSource.getMessage( "turn.end" , null , locale ) );
-				this.turnCount += 1;
+				battle.getMesageList().add( battle.getTurnCount() + messageSource.getMessage( "turn.end" , null , locale ) );
+				battle.setTurnCount( battle.getTurnCount() + 1 );
 				
 				session.invalidate();
 				session.setAttribute( BattleObject , battle );
@@ -293,8 +290,8 @@ public class PublicController {
 			
 			//ターン終了時に発動する処理
 			battle.endSkill();
-			battle.getMesageList().add( turnCount + messageSource.getMessage( "turn.end" , null , locale ) );
-			this.turnCount += 1;
+			battle.getMesageList().add( battle.getTurnCount() + messageSource.getMessage( "turn.end" , null , locale ) );
+			battle.setTurnCount( battle.getTurnCount() + 1 );
 			
 			session.invalidate();
 			session.setAttribute( BattleObject , battle );
