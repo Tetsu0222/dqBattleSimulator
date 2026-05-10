@@ -18,7 +18,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.example.rpg2.battle.AllyData;
 import com.example.rpg2.battle.Battle;
+import com.example.rpg2.battle.BattleProgressService;
 import com.example.rpg2.battle.MonsterData;
+
 import com.example.rpg2.entity.Ally;
 import com.example.rpg2.entity.Monster;
 import com.example.rpg2.process.CreateCharacterSet;
@@ -38,8 +40,7 @@ public class PublicController {
 	private final MonsterRepository monsterRepository;
 	private final HttpSession session;
 	private final MessageSource messageSource;
-	
-	
+
 	//定数
 	private final String keys = "key";
 	private final String TopMenu = "index";
@@ -60,7 +61,6 @@ public class PublicController {
 	private List<String> allyNameList = new ArrayList<>();
 	private List<String> enemyNameList = new ArrayList<>();
 
-
 	//TOP画面に対応
 	@GetMapping( "/" )
 	public ModelAndView Index( ModelAndView mv ) {
@@ -79,8 +79,7 @@ public class PublicController {
 
 		return mv;
 	}
-	
-	
+
 	//バトルへ遷移
 	@GetMapping( "/battle" )
 	public ModelAndView battle( @RequestParam( name = "PLV1" ) Integer pid1 ,
@@ -126,8 +125,7 @@ public class PublicController {
 		
 		return mv;
 	}
-	
-	
+
 	//通常攻撃を選択
 	@GetMapping( "/attack/{key}" )
 	public ModelAndView attack( @PathVariable( name = keys ) int key ,
@@ -138,8 +136,7 @@ public class PublicController {
 		return mv;
 		
 	}
-	
-	
+
 	//通常攻撃のターゲット選択(敵）
 	@GetMapping( "/target/attack/monster/{key}" )
 	public ModelAndView attackTargetMonster( @PathVariable( name = keys ) int key ,
@@ -152,8 +149,7 @@ public class PublicController {
 
 		return mv;
 	}
-	
-	
+
 	//防御を選択
 	@GetMapping( "/defense/{key}" )
 	public ModelAndView defense( @PathVariable( name = keys ) int key ,
@@ -165,8 +161,7 @@ public class PublicController {
 		
 		return mv;
 	}
-	
-	
+
 	//戦闘開始
 	@GetMapping( "/start" )
 	public ModelAndView start( ModelAndView mv , Locale locale ) {
@@ -196,8 +191,7 @@ public class PublicController {
 
 		return mv;
 	}
-	
-	
+
 	//戦闘続行
 	@GetMapping( "/next" )
 	public ModelAndView next( ModelAndView mv , Locale locale ) {
@@ -208,14 +202,61 @@ public class PublicController {
 	
 		//前回までのログを消去
 		battle.getMesageList().clear();
-		
+		if( turnqueue.peek() == null ) {
+			//ターン終了時に発動する処理
+			battle.endSkill();
+			battle.getMesageList().add( battle.getTurnCount() + messageSource.getMessage( "turn.end" , null , locale ) );
+			battle.setTurnCount( battle.getTurnCount() + 1 );
+			
+			session.invalidate();
+			session.setAttribute( BattleObject , battle );
+			session.setAttribute( ScreenMode   , TurnEnd  );
+
+			return mv;
+		}
+
 		//素早さ順に行動
-		this.turnAction( battle , locale );
-		
+		Integer actionObj = turnqueue.poll();
+		BattleProgressService battleProgressService = new BattleProgressService();
+		boolean possible = battleProgressService.turnAction( battle , locale , actionObj);
+
+		//ターン終了判定
+		if(possible){
+
+			//判定結果trueであれば行動実行
+			battle.startBattle( actionObj );
+			
+			//戦闘終了判定
+			if( battle.getTargetSetAlly().size() == 0 ) {
+				session.invalidate();
+				battle.getMesageList().add( messageSource.getMessage( "lose.message" , null , locale ) );
+				session.setAttribute( BattleObject , battle );
+				session.setAttribute( ScreenMode , BattleResult );
+			}else if( battle.getTargetSetEnemy().size() == 0 ) {
+				session.invalidate();
+				battle.getMesageList().add( messageSource.getMessage( "win.message" , null , locale ) );
+				session.setAttribute( BattleObject , battle );
+				session.setAttribute( ScreenMode , BattleResult );
+			}else{
+				session.invalidate();
+				session.setAttribute( BattleObject , battle );
+				session.setAttribute( ScreenMode , TurnProgression );
+			}
+
+		//全員の行動が終了
+		}else{
+			//ターン終了時に発動する処理
+			battle.endSkill();
+			battle.getMesageList().add( battle.getTurnCount() + messageSource.getMessage( "turn.end" , null , locale ) );
+			battle.setTurnCount( battle.getTurnCount() + 1 );
+
+			session.invalidate();
+			session.setAttribute( BattleObject , battle );
+			session.setAttribute( ScreenMode   , TurnEnd  );
+		}
 		return mv;
 	}
-	
-	
+
 	//ターン終了
 	@GetMapping( "/end" )
 	public ModelAndView end( ModelAndView mv ) {
@@ -230,141 +271,4 @@ public class PublicController {
 		
 		return mv;
 	}
-	
-	
-	
-	//------------------------------------------------------
-	//素早さ順で行動処理を実行させるメソッド
-	//別クラスへ委譲させたい。
-	//------------------------------------------------------
-	public void turnAction( Battle battle , Locale locale ) {
-		
-		if( turnqueue.peek() != null ) {
-			
-			Integer actionObj = turnqueue.poll();
-			
-			//ターン終了判定
-			if( this.isPossible( battle , actionObj )){
-				
-				//判定結果trueであれば行動実行
-				battle.startBattle( actionObj );
-				
-				//戦闘終了判定
-				if( battle.getTargetSetAlly().size() == 0 ) {
-					session.invalidate();
-					battle.getMesageList().add( messageSource.getMessage( "lose.message" , null , locale ) );
-					session.setAttribute( BattleObject , battle );
-					session.setAttribute( ScreenMode , BattleResult );
-					
-				}else if( battle.getTargetSetEnemy().size() == 0 ) {
-					session.invalidate();
-					battle.getMesageList().add( messageSource.getMessage( "win.message" , null , locale ) );
-					session.setAttribute( BattleObject , battle );
-					session.setAttribute( ScreenMode , BattleResult );
-					
-				}else{
-					session.invalidate();
-					session.setAttribute( BattleObject , battle );
-					session.setAttribute( ScreenMode , TurnProgression );
-				}
-			
-			//全員の行動が終了
-			}else{
-				
-				//ターン終了時に発動する処理
-				battle.endSkill();
-				battle.getMesageList().add( battle.getTurnCount() + messageSource.getMessage( "turn.end" , null , locale ) );
-				battle.setTurnCount( battle.getTurnCount() + 1 );
-				
-				session.invalidate();
-				session.setAttribute( BattleObject , battle );
-				session.setAttribute( ScreenMode   , TurnEnd  );
-			}
-			
-		//全キャラクターの行動終了
-		}else{
-			
-			//ターン終了時に発動する処理
-			battle.endSkill();
-			battle.getMesageList().add( battle.getTurnCount() + messageSource.getMessage( "turn.end" , null , locale ) );
-			battle.setTurnCount( battle.getTurnCount() + 1 );
-			
-			session.invalidate();
-			session.setAttribute( BattleObject , battle );
-			session.setAttribute( ScreenMode   , TurnEnd  );
-		}
-	}
-	
-	
-	
-	
-	//-----------------------------------------------------
-	//ターン継続判定を行うメソッド、別クラスへ委譲させたい。
-	//再帰的に処理し、falseを返すとターン終了させる。
-	//-----------------------------------------------------
-	public boolean isPossible( Battle battle , Integer actionObj ) {
-		
-		boolean possible = false;
-		
-		//味方側の生存チェック
-		if( battle.getPartyMap().get( actionObj ) != null ){
-			
-			//生存しているかどうかで処理を分岐
-			if( battle.getPartyMap().get( actionObj ).getSurvival() == 0 ) {
-				
-				//行動対象者が死亡している場合は、該当インデックスを次の行動対象者で上書き
-				if( turnqueue.peek() != null ) {
-					actionObj = turnqueue.poll();
-					
-					//次の行動対象者も生存チェックを実行
-					if( this.isPossible( battle , actionObj )) {
-						possible = true;
-					
-					//自メソッドを繰り返し、結果的に値がなくなっていればターン終了判定(false)を返す。
-					}else{
-						possible = false;
-					}
-				
-				//次の値が存在しなければターン終了(falseを返す)
-				}else{
-					possible = false;
-				}
-				
-			//生存していれば処理実行
-			}else{
-				possible = true;
-			}
-			
-		//敵側の生存チェック
-		}else if( battle.getMonsterDataMap().get( actionObj ) != null ){
-			
-			if( battle.getMonsterDataMap().get( actionObj ).getSurvival() == 0 ) {
-					
-				//行動対象者が死亡している場合は、該当インデックスを次の行動対象者で上書き
-				if( turnqueue.peek() != null ) {
-					actionObj = turnqueue.poll();
-						
-					//次の行動対象者も生存チェックを実行
-					if( this.isPossible( battle , actionObj )) {
-						possible = true;
-						
-					//自メソッドを繰り返し、結果的に値がなくなっていればターン終了判定(false)を返す。
-					}else{
-						possible = false;
-					}
-					
-				//次の値が存在しなければターン終了(falseを返す)
-				}else{
-					possible = false;
-				}
-					
-			//生存していれば処理実行
-			}else{
-				possible = true;
-			}
-		}
-		
-		return possible;
-	}
-	
 }
