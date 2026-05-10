@@ -32,3 +32,9 @@ Step1の段階ではそこまで踏み込まない。ゴールデンマスター
 ### (iii) 確認
 - Step1-A のテストが緑のまま通ることを確認
 - 手動での動作確認（戦闘1試合通しで挙動が変わっていないこと）
+
+# Step2:トラブルドキュメント対応
+## 詳細
+docs\troubles\2026-05-10_battleprogressservice-turnqueue-npe.md
+
+# Step3:
