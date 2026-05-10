@@ -218,7 +218,7 @@ public class PublicController {
 		//素早さ順に行動
 		Integer actionObj = turnqueue.poll();
 		BattleProgressService battleProgressService = new BattleProgressService();
-		boolean possible = battleProgressService.turnAction( battle , locale , actionObj);
+		boolean possible = battleProgressService.turnAction( battle , actionObj , turnqueue);
 
 		//ターン終了判定
 		if(possible){
