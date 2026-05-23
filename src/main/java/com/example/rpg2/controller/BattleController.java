@@ -22,8 +22,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 public class BattleController {
-	
-	private final HttpSession session;
+	// TODO:コンストラクタインジェクションじゃなくす人達A
 	private final MessageSource messageSource;
 
 	//定数
@@ -37,14 +36,14 @@ public class BattleController {
 	private final String BattleResult = "result";
 	private final String NormalAttack = "attackTargetMonster";
 	
-	//行動する側の情報を管理
+	//行動する側の情報を管理 TODO:フィールドに持たない人達A
 	private Integer myKeys;
 	private Queue<Integer> turnqueue;
 
 	//通常攻撃を選択
 	@GetMapping( "/attack/{key}" )
 	public ModelAndView attack( @PathVariable( name = keys ) int key ,
-								ModelAndView mv ) {
+								ModelAndView mv , HttpSession session ) {
 		mv.setViewName( BattleScreen );
 		myKeys = key;
 		session.setAttribute( ScreenMode , NormalAttack );
@@ -55,7 +54,7 @@ public class BattleController {
 	//通常攻撃のターゲット選択(敵）
 	@GetMapping( "/target/attack/monster/{key}" )
 	public ModelAndView attackTargetMonster( @PathVariable( name = keys ) int key ,
-											 ModelAndView mv ) {
+											 ModelAndView mv , HttpSession session) {
 		mv.setViewName( BattleScreen );
 		Battle battle = (Battle)session.getAttribute( BattleObject );
 		battle.selectionAttack( myKeys , key );
@@ -68,7 +67,7 @@ public class BattleController {
 	//防御を選択
 	@GetMapping( "/defense/{key}" )
 	public ModelAndView defense( @PathVariable( name = keys ) int key ,
-								 ModelAndView mv ) {
+								 ModelAndView mv , HttpSession session) {
 		
 		mv.setViewName( BattleScreen );
 		Battle battle = (Battle)session.getAttribute( BattleObject );
@@ -79,7 +78,7 @@ public class BattleController {
 
 	//戦闘開始
 	@GetMapping( "/start" )
-	public ModelAndView start( ModelAndView mv , Locale locale ) {
+	public ModelAndView start( ModelAndView mv , Locale locale , HttpSession session) {
 		
 		//いつもの処理
 		mv.setViewName( BattleScreen );
@@ -109,7 +108,7 @@ public class BattleController {
 
 	//戦闘続行
 	@GetMapping( "/next" )
-	public ModelAndView next( ModelAndView mv , Locale locale ) {
+	public ModelAndView next( ModelAndView mv , Locale locale , HttpSession session) {
 		
 		//いつもの処理
 		mv.setViewName( BattleScreen );
@@ -174,7 +173,7 @@ public class BattleController {
 
 	//ターン終了
 	@GetMapping( "/end" )
-	public ModelAndView end( ModelAndView mv ) {
+	public ModelAndView end( ModelAndView mv , HttpSession session) {
 		
 		//いつもの処理
 		mv.setViewName( BattleScreen );

@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CreateCharacterSet {
 
-	public String abc[] = { "A" , "B" , "C" , "D" };
+	private final String abc[] = { "A" , "B" , "C" , "D" };
 
 	private final MagicRepository magicRepository;
 	private final AllyRepository allyRepository;
