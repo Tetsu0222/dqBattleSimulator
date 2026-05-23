@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 public class BattleController {
-	// TODO:コンストラクタインジェクションじゃなくす人達A
+
 	private final MessageSource messageSource;
 
 	//定数
