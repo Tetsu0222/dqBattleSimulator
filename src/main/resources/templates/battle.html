@@ -137,19 +137,19 @@
 					</tr>
 					<tr>
 						<td>
-							<a th:href="@{/magic/__${key}__}" th:text="すべて"></a>
+							<a th:href="@{/magic/__${myKey}__}" th:text="すべて"></a>
 						</td>
 						<td>
-							<a th:href="@{/magic/attack/__${key}__}" th:text="攻撃魔法"></a>
+							<a th:href="@{/magic/attack/__${myKey}__}" th:text="攻撃魔法"></a>
 						</td>
 						<td>
-							<a th:href="@{/magic/recovery/__${key}__}" th:text="回復魔法"></a>
+							<a th:href="@{/magic/recovery/__${myKey}__}" th:text="回復魔法"></a>
 						</td>				
 						<td>
-							<a th:href="@{/magic/buff/__${key}__}" th:text="補助魔法"></a>
+							<a th:href="@{/magic/buff/__${myKey}__}" th:text="補助魔法"></a>
 						</td>
 						<td>
-							<a th:href="@{/magic/debuff/__${key}__}" th:text="妨害魔法"></a>
+							<a th:href="@{/magic/debuff/__${myKey}__}" th:text="妨害魔法"></a>
 						</td>
 					</tr>
 				</form>
@@ -166,7 +166,7 @@
 					<tr th:each="ma:${magicList}">
 						<td>
 							<div th:unless="${ma.id == 26}">
-								<a th:href="@{/magic/add/__${ma.id}__}" th:text="${ma.name}"></a>
+								<a th:href="@{/magic/add/__${ma.id}__/__${myKey}__}" th:text="${ma.name}"></a>
 							</div>
 							<div th:if="${ma.id == 26}">
 								<a th:text="${ma.name}"></a>
@@ -270,7 +270,7 @@
 					</tr>
 					<tr th:each="entry:${session.battle.partyMap}">
 						<td th:unless="${entry.value.survival == 0}">
-							<a th:href="@{/target/magic/ally/__${entry.key}__}" th:text="${entry.value.name}"></a>
+							<a th:href="@{/target/magic/ally/__${myKey}__/__${entry.key}__}" th:text="${entry.value.name}"></a>
 						</td>
 					</tr>
 				</form>
@@ -285,7 +285,7 @@
 					</tr>
 					<tr th:each="entry:${session.battle.partyMap}">
 						<td th:if="${entry.value.survival == 0}">
-							<a th:href="@{/target/magic/ally/__${entry.key}__}" th:text="${entry.value.name}"></a>
+							<a th:href="@{/target/magic/ally/__${myKey}__/__${entry.key}__}" th:text="${entry.value.name}"></a>
 						</td>
 					</tr>
 				</form>
@@ -301,7 +301,7 @@
 					</tr>
 					<tr th:each="entry:${session.battle.monsterDataMap}">
 						<td th:unless="${entry.value.survival == 0}">
-							<a th:href="@{/target/magic/monster/__${entry.key}__}" th:text="${entry.value.name}"></a>
+							<a th:href="@{/target/magic/monster/__${myKey}__/__${entry.key}__}" th:text="${entry.value.name}"></a>
 						</td>
 					</tr>
 				</form>
@@ -316,7 +316,7 @@
 					</tr>
 					<tr th:each="name:${session.battle.enemyNameList}">
 						<td>
-							<a th:href="@{/target/magic/monsterGroup/__${name}__}" th:text="${name}"></a>
+							<a th:href="@{/target/magic/monsterGroup/__${name}__/__${myKey}__}" th:text="${name}"></a>
 						</td>
 					</tr>
 				</form>
@@ -332,7 +332,7 @@
 					</tr>
 					<tr th:each="entry:${session.battle.partyMap}">
 						<td th:unless="${entry.value.survival == 0}">
-							<a th:href="@{/target/skill/ally/__${entry.key}__}" th:text="${entry.value.name}"></a>
+							<a th:href="@{/target/skill/ally/__${myKey}__/__${entry.key}__}" th:text="${entry.value.name}"></a>
 						</td>
 					</tr>
 				</form>
