@@ -36,28 +36,28 @@ public class BattleController {
 	private final String BattleResult = "result";
 	private final String NormalAttack = "attackTargetMonster";
 	
-	//行動する側の情報を管理 TODO:フィールドに持たない人達A
-	private Integer myKeys;
+	//TODO:フィールドに持たない人達A
 	private Queue<Integer> turnqueue;
 
 	//通常攻撃を選択
-	@GetMapping( "/attack/{key}" )
-	public ModelAndView attack( @PathVariable( name = keys ) int key ,
+	@GetMapping( "/attack/{myKey}" )
+	public ModelAndView attack( @PathVariable int myKey ,
 								ModelAndView mv , HttpSession session ) {
 		mv.setViewName( BattleScreen );
-		myKeys = key;
+		mv.addObject( "myKey" , myKey );
 		session.setAttribute( ScreenMode , NormalAttack );
 		return mv;
-		
+
 	}
 
 	//通常攻撃のターゲット選択(敵）
-	@GetMapping( "/target/attack/monster/{key}" )
-	public ModelAndView attackTargetMonster( @PathVariable( name = keys ) int key ,
+	@GetMapping( "/target/attack/monster/{myKey}/{targetKey}" )
+	public ModelAndView attackTargetMonster( @PathVariable int myKey ,
+											 @PathVariable int targetKey ,
 											 ModelAndView mv , HttpSession session) {
 		mv.setViewName( BattleScreen );
 		Battle battle = (Battle)session.getAttribute( BattleObject );
-		battle.selectionAttack( myKeys , key );
+		battle.selectionAttack( myKey , targetKey );
 		session.setAttribute( BattleObject , battle );
 		session.setAttribute( ScreenMode , BeforeTurn );
 
@@ -121,8 +121,7 @@ public class BattleController {
 			battle.endSkill();
 			battle.getMesageList().add( battle.getTurnCount() + messageSource.getMessage( "turn.end" , null , locale ) );
 			battle.setTurnCount( battle.getTurnCount() + 1 );
-			
-			session.invalidate();
+
 			session.setAttribute( BattleObject , battle );
 			session.setAttribute( ScreenMode   , TurnEnd  );
 
@@ -142,17 +141,14 @@ public class BattleController {
 			
 			//戦闘終了判定
 			if( battle.getTargetSetAlly().size() == 0 ) {
-				session.invalidate();
 				battle.getMesageList().add( messageSource.getMessage( "lose.message" , null , locale ) );
 				session.setAttribute( BattleObject , battle );
 				session.setAttribute( ScreenMode , BattleResult );
 			}else if( battle.getTargetSetEnemy().size() == 0 ) {
-				session.invalidate();
 				battle.getMesageList().add( messageSource.getMessage( "win.message" , null , locale ) );
 				session.setAttribute( BattleObject , battle );
 				session.setAttribute( ScreenMode , BattleResult );
 			}else{
-				session.invalidate();
 				session.setAttribute( BattleObject , battle );
 				session.setAttribute( ScreenMode , TurnProgression );
 			}
@@ -164,7 +160,6 @@ public class BattleController {
 			battle.getMesageList().add( battle.getTurnCount() + messageSource.getMessage( "turn.end" , null , locale ) );
 			battle.setTurnCount( battle.getTurnCount() + 1 );
 
-			session.invalidate();
 			session.setAttribute( BattleObject , battle );
 			session.setAttribute( ScreenMode   , TurnEnd  );
 		}
@@ -178,8 +173,7 @@ public class BattleController {
 		//いつもの処理
 		mv.setViewName( BattleScreen );
 		Battle battle = (Battle)session.getAttribute( BattleObject );
-		
-		session.invalidate();
+
 		session.setAttribute( BattleObject , battle );
 		session.setAttribute( ScreenMode , BeforeTurn );
 		

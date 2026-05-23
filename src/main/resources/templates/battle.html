@@ -254,7 +254,7 @@
 					</tr>
 					<tr th:each="entry:${session.battle.monsterDataMap}">
 						<td th:unless="${entry.value.survival == 0}">
-							<a th:href="@{/target/attack/monster/__${entry.key}__}" th:text="${entry.value.name}"></a>
+							<a th:href="@{/target/attack/monster/__${myKey}__/__${entry.key}__}" th:text="${entry.value.name}"></a>
 						</td>
 					</tr>
 				</form>
