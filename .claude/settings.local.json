@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./mvnw -q -DskipTests compile)",
+      "PowerShell(& 'c:\\\\Users\\\\root2\\\\OneDrive\\\\�f�X�N�g�b�v\\\\dqBattleSimulator\\\\gradlew.bat' -p 'c:\\\\Users\\\\root2\\\\OneDrive\\\\�f�X�N�g�b�v\\\\dqBattleSimulator' compileJava -q 2>&1)"
+    ]
+  }
+}
