@@ -29,7 +29,6 @@ public class AttackController {
 		mv.addObject( "myKey" , myKey );
 		session.setAttribute( ScreenMode , NormalAttack );
 		return mv;
-
 	}
 
 	//通常攻撃のターゲット選択(敵）
@@ -42,7 +41,6 @@ public class AttackController {
 		battle.selectionAttack( myKey , targetKey );
 		session.setAttribute( BattleObject , battle );
 		session.setAttribute( ScreenMode , BeforeTurn );
-
 		return mv;
 	}
 }

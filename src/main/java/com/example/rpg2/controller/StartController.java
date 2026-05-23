@@ -40,18 +40,13 @@ public class StartController {
 	//TOP画面に対応
 	@GetMapping( "/" )
 	public ModelAndView Index( ModelAndView mv , HttpSession session ) {
-
 		mv.setViewName(TopMenu);
-
 		//プレイアブルキャラクターとエネミーキャラクターの選択肢を提示（id と name のみ取得）
 		List<AllySummary>    allyList    = allyRepository.findAllProjectedBy();
 		List<MonsterSummary> monsterList = monsterRepository.findAllProjectedBy();
-
 		mv.addObject( PartyMember , allyList    );
 		mv.addObject( EnemyMember , monsterList );
-
 		session.invalidate();
-
 		return mv;
 	}
 
@@ -67,35 +62,26 @@ public class StartController {
 								@RequestParam( name = "MLV4" ) Integer mid4 ,
 								ModelAndView mv ,
 								HttpSession session ) {
-
 		mv.setViewName( BattleScreen );
-
 		//選択に応じたプレイアブルキャラクターのIdを格納
 		List<Integer> repositoryIdList = Stream.of( pid1 , pid2 , pid3 , pid4 )
 				.filter( s -> s > 0 )
 				.collect( Collectors.toList() );
-
 		//生成プレイアブルキャラクターを格納するセットを生成
 		PartyBuildResult partyResult = createCharacterSet.createPartySet( repositoryIdList );
-
 		//選択に応じたエネミーキャラクターのIdを格納
 		List<Integer> repositoryEnemyIdList = Stream.of( mid1 , mid2 , mid3 , mid4 )
 				.filter( s -> s > 0 )
 				.collect( Collectors.toList() );
-
 		//生成したエネミーキャラクターを格納するセットを生成
 		EnemyBuildResult enemyResult = createCharacterSet.createEnemySet( repositoryEnemyIdList );
-
 		//戦闘処理用のオブジェクトを生成
 		Battle battle = new Battle( partyResult.partySet() , enemyResult.monsterDataSet() ,
 				partyResult.nameList() , enemyResult.nameListEnemy() );
-
 		//戦闘処理をサポートするクラスを生成
 		battle.createSupport();
-
 		//戦闘画面用のデータをセッションスコープに保存
 		session.setAttribute( BattleObject , battle );
-
 		return mv;
 	}
 }
