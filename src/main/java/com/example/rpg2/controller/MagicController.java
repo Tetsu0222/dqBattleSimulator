@@ -109,7 +109,7 @@ public class MagicController {
 
 	//魔法を選択
 	@GetMapping( "/magic/add/{id}/{myKey}" )
-	public ModelAndView magic2( @PathVariable( name = "id" ) int id ,
+	public ModelAndView magic2( @PathVariable int id ,
 								@PathVariable int myKey ,
 								ModelAndView mv , HttpSession session) {
 		mv.setViewName( "battle" );
@@ -205,7 +205,7 @@ public class MagicController {
 
 	//ターゲット選択(グループ攻撃魔法)
 	@GetMapping( "/target/magic/monsterGroup/{name}/{myKey}" )
-	public ModelAndView magicTargetMonsterGroup( @PathVariable( name = "name" ) String name ,
+	public ModelAndView magicTargetMonsterGroup( @PathVariable String name ,
 												 @PathVariable int myKey ,
 												 ModelAndView mv , HttpSession session) {
 		mv.setViewName( "battle" );
