@@ -32,6 +32,13 @@ public class BattleController {
     private final String BeforeTurn      = "log";
     private final String BattleResult    = "result";
 
+    // ロケールが null の場合はデフォルトロケールを使用してメッセージを取得
+    @SuppressWarnings("null")
+    private String getMessage(String code, Locale locale) {
+        Locale resolved = locale != null ? locale : Locale.getDefault();
+        return messageSource.getMessage(code, null, resolved);
+    }
+
     // 戦闘開始
     @GetMapping("/start")
     public ModelAndView start(ModelAndView mv, Locale locale, HttpSession session) {
@@ -54,7 +61,7 @@ public class BattleController {
 
         // ターンの最初に発動する効果を処理
         battle.startSkill();
-        battle.getMesageList().add(battle.getTurnCount() + messageSource.getMessage("turn.start", null, locale));
+        battle.getMesageList().add(battle.getTurnCount() + getMessage("turn.start", locale));
 
         session.setAttribute(BattleObject, battle);
         session.setAttribute(ScreenMode,   TurnProgression);
@@ -63,6 +70,7 @@ public class BattleController {
     }
 
     // 戦闘続行
+    @SuppressWarnings("unchecked")
     @GetMapping("/next")
     public ModelAndView next(ModelAndView mv, Locale locale, HttpSession session) {
         // いつもの処理
@@ -78,7 +86,7 @@ public class BattleController {
         if (turnqueue.peek() == null) {
             // ターン終了時に発動する処理
             battle.endSkill();
-            battle.getMesageList().add(battle.getTurnCount() + messageSource.getMessage("turn.end", null, locale));
+            battle.getMesageList().add(battle.getTurnCount() + getMessage("turn.end", locale));
             battle.setTurnCount(battle.getTurnCount() + 1);
 
             session.setAttribute(BattleObject, battle);
@@ -98,11 +106,11 @@ public class BattleController {
 
             // 戦闘終了判定
             if (battle.getTargetSetAlly().size() == 0) {
-                battle.getMesageList().add(messageSource.getMessage("lose.message", null, locale));
+                battle.getMesageList().add(getMessage("lose.message", locale));
                 session.setAttribute(BattleObject, battle);
                 session.setAttribute(ScreenMode,   BattleResult);
             } else if (battle.getTargetSetEnemy().size() == 0) {
-                battle.getMesageList().add(messageSource.getMessage("win.message", null, locale));
+                battle.getMesageList().add(getMessage("win.message", locale));
                 session.setAttribute(BattleObject, battle);
                 session.setAttribute(ScreenMode,   BattleResult);
             } else {
@@ -114,7 +122,7 @@ public class BattleController {
         } else {
             // ターン終了時に発動する処理
             battle.endSkill();
-            battle.getMesageList().add(battle.getTurnCount() + messageSource.getMessage("turn.end", null, locale));
+            battle.getMesageList().add(battle.getTurnCount() + getMessage("turn.end", locale));
             battle.setTurnCount(battle.getTurnCount() + 1);
 
             session.setAttribute(BattleObject, battle);
