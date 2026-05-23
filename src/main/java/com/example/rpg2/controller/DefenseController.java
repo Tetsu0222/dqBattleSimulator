@@ -14,18 +14,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DefenseController {
 
-	//定数
-	private final String BattleScreen = "battle";
-	private final String BattleObject = "battle";
+    // 定数
+    private final String BattleScreen = "battle";
+    private final String BattleObject = "battle";
 
-	//防御を選択
-	@GetMapping( "/defense/{myKey}" )
-	public ModelAndView defense( @PathVariable int myKey ,
-								 ModelAndView mv , HttpSession session) {
-		mv.setViewName( BattleScreen );
-		Battle battle = (Battle)session.getAttribute( BattleObject );
-		battle.selectionDefense( myKey );
-		session.setAttribute( BattleObject , battle );
-		return mv;
-	}
+    // 防御を選択
+    @GetMapping("/defense/{myKey}")
+    public ModelAndView defense(@PathVariable int myKey,
+                                ModelAndView mv, HttpSession session) {
+        mv.setViewName(BattleScreen);
+        Battle battle = (Battle) session.getAttribute(BattleObject);
+
+        battle.selectionDefense(myKey);
+
+        session.setAttribute(BattleObject, battle);
+        return mv;
+    }
 }

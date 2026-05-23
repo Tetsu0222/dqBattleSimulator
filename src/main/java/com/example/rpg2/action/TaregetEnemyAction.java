@@ -12,7 +12,5 @@ public interface TaregetEnemyAction {
 	public boolean isNotEnoughMp();
 	public MonsterData action( MonsterData monsterData );
 	public String getDamageMessage();
-	
-
 
 }

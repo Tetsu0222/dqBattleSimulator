@@ -12,7 +12,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.example.rpg2.battle.Battle;
 import com.example.rpg2.battle.BattleProgressService;
-
 import com.example.rpg2.process.TurnQueue;
 
 import jakarta.servlet.http.HttpSession;
@@ -22,103 +21,117 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BattleController {
 
-	private final MessageSource messageSource;
+    private final MessageSource messageSource;
 
-	//定数
-	private final String BattleScreen = "battle";
-	private final String BattleObject = "battle";
-	private final String TurnProgression = "battle";
-	private final String ScreenMode = "mode";
-	private final String TurnEnd = "end";
-	private final String BeforeTurn = "log";
-	private final String BattleResult = "result";
+    // 定数
+    private final String BattleScreen    = "battle";
+    private final String BattleObject    = "battle";
+    private final String TurnProgression = "battle";
+    private final String ScreenMode      = "mode";
+    private final String TurnEnd         = "end";
+    private final String BeforeTurn      = "log";
+    private final String BattleResult    = "result";
 
-	//戦闘開始
-	@GetMapping( "/start" )
-	public ModelAndView start( ModelAndView mv , Locale locale , HttpSession session) {
-		//いつもの処理
-		mv.setViewName( BattleScreen );
-		Battle battle = (Battle)session.getAttribute( BattleObject );
-		//前回までのログを消去
-		battle.getMesageList().clear();
-		//各キャラクターの行動順を規定
-		battle.turn();
-		//各キャラクターの座標を素早さが高い順（降順）でソートしたリストを取得
-		List<Entry<Integer, Integer>> turnList = battle.getTurnList();
-		//素早さで順でソートされたリストから、各キャラクターの座標だけ抽出してキューへ格納
-		//このキューを用いて具体的な戦闘処理を実施する。
-		Queue<Integer> turnqueue = TurnQueue.getTurnQueue( turnList );
-		//ターンの最初に発動する効果を処理
-		battle.startSkill();
-		battle.getMesageList().add( battle.getTurnCount() + messageSource.getMessage( "turn.start" , null , locale ) );
-		session.setAttribute( BattleObject , battle );
-		session.setAttribute( ScreenMode   , TurnProgression );
-		session.setAttribute( "turnqueue"   , turnqueue );
-		return mv;
-	}
+    // 戦闘開始
+    @GetMapping("/start")
+    public ModelAndView start(ModelAndView mv, Locale locale, HttpSession session) {
+        // いつもの処理
+        mv.setViewName(BattleScreen);
+        Battle battle = (Battle) session.getAttribute(BattleObject);
 
-	//戦闘続行
-	@GetMapping( "/next" )
-	public ModelAndView next( ModelAndView mv , Locale locale , HttpSession session) {
-		//いつもの処理
-		mv.setViewName( BattleScreen );
-		Battle battle = (Battle)session.getAttribute( BattleObject );
-		//前回までのログを消去
-		battle.getMesageList().clear();
-		//キューを取得
-		Queue<Integer> turnqueue = (Queue<Integer>) session.getAttribute( "turnqueue" );
+        // 前回までのログを消去
+        battle.getMesageList().clear();
 
-		if( turnqueue.peek() == null ) {
-			//ターン終了時に発動する処理
-			battle.endSkill();
-			battle.getMesageList().add( battle.getTurnCount() + messageSource.getMessage( "turn.end" , null , locale ) );
-			battle.setTurnCount( battle.getTurnCount() + 1 );
-			session.setAttribute( BattleObject , battle );
-			session.setAttribute( ScreenMode   , TurnEnd  );
-			return mv;
-		}
+        // 各キャラクターの行動順を規定
+        battle.turn();
 
-		//素早さ順に行動
-		Integer actionObj = turnqueue.poll();
-		BattleProgressService battleProgressService = new BattleProgressService();
-		boolean possible = battleProgressService.turnAction( battle , actionObj , turnqueue);
-		//ターン終了判定
-		if(possible){
-			//判定結果trueであれば行動実行
-			battle.startBattle( actionObj );
-			//戦闘終了判定
-			if( battle.getTargetSetAlly().size() == 0 ) {
-				battle.getMesageList().add( messageSource.getMessage( "lose.message" , null , locale ) );
-				session.setAttribute( BattleObject , battle );
-				session.setAttribute( ScreenMode , BattleResult );
-			}else if( battle.getTargetSetEnemy().size() == 0 ) {
-				battle.getMesageList().add( messageSource.getMessage( "win.message" , null , locale ) );
-				session.setAttribute( BattleObject , battle );
-				session.setAttribute( ScreenMode , BattleResult );
-			}else{
-				session.setAttribute( BattleObject , battle );
-				session.setAttribute( ScreenMode , TurnProgression );
-			}
-		//全員の行動が終了
-		}else{
-			//ターン終了時に発動する処理
-			battle.endSkill();
-			battle.getMesageList().add( battle.getTurnCount() + messageSource.getMessage( "turn.end" , null , locale ) );
-			battle.setTurnCount( battle.getTurnCount() + 1 );
-			session.setAttribute( BattleObject , battle );
-			session.setAttribute( ScreenMode   , TurnEnd  );
-		}
-		return mv;
-	}
+        // 各キャラクターの座標を素早さが高い順（降順）でソートしたリストを取得
+        List<Entry<Integer, Integer>> turnList = battle.getTurnList();
 
-	//ターン終了
-	@GetMapping( "/end" )
-	public ModelAndView end( ModelAndView mv , HttpSession session) {
-		//いつもの処理
-		mv.setViewName( BattleScreen );
-		Battle battle = (Battle)session.getAttribute( BattleObject );
-		session.setAttribute( BattleObject , battle );
-		session.setAttribute( ScreenMode , BeforeTurn );
-		return mv;
-	}
+        // 素早さで順でソートされたリストから、各キャラクターの座標だけ抽出してキューへ格納
+        // このキューを用いて具体的な戦闘処理を実施する。
+        Queue<Integer> turnqueue = TurnQueue.getTurnQueue(turnList);
+
+        // ターンの最初に発動する効果を処理
+        battle.startSkill();
+        battle.getMesageList().add(battle.getTurnCount() + messageSource.getMessage("turn.start", null, locale));
+
+        session.setAttribute(BattleObject, battle);
+        session.setAttribute(ScreenMode,   TurnProgression);
+        session.setAttribute("turnqueue",  turnqueue);
+        return mv;
+    }
+
+    // 戦闘続行
+    @GetMapping("/next")
+    public ModelAndView next(ModelAndView mv, Locale locale, HttpSession session) {
+        // いつもの処理
+        mv.setViewName(BattleScreen);
+        Battle battle = (Battle) session.getAttribute(BattleObject);
+
+        // 前回までのログを消去
+        battle.getMesageList().clear();
+
+        // キューを取得
+        Queue<Integer> turnqueue = (Queue<Integer>) session.getAttribute("turnqueue");
+
+        if (turnqueue.peek() == null) {
+            // ターン終了時に発動する処理
+            battle.endSkill();
+            battle.getMesageList().add(battle.getTurnCount() + messageSource.getMessage("turn.end", null, locale));
+            battle.setTurnCount(battle.getTurnCount() + 1);
+
+            session.setAttribute(BattleObject, battle);
+            session.setAttribute(ScreenMode,   TurnEnd);
+            return mv;
+        }
+
+        // 素早さ順に行動
+        Integer actionObj = turnqueue.poll();
+        BattleProgressService battleProgressService = new BattleProgressService();
+        boolean possible = battleProgressService.turnAction(battle, actionObj, turnqueue);
+
+        // ターン終了判定
+        if (possible) {
+            // 判定結果trueであれば行動実行
+            battle.startBattle(actionObj);
+
+            // 戦闘終了判定
+            if (battle.getTargetSetAlly().size() == 0) {
+                battle.getMesageList().add(messageSource.getMessage("lose.message", null, locale));
+                session.setAttribute(BattleObject, battle);
+                session.setAttribute(ScreenMode,   BattleResult);
+            } else if (battle.getTargetSetEnemy().size() == 0) {
+                battle.getMesageList().add(messageSource.getMessage("win.message", null, locale));
+                session.setAttribute(BattleObject, battle);
+                session.setAttribute(ScreenMode,   BattleResult);
+            } else {
+                session.setAttribute(BattleObject, battle);
+                session.setAttribute(ScreenMode,   TurnProgression);
+            }
+
+        // 全員の行動が終了
+        } else {
+            // ターン終了時に発動する処理
+            battle.endSkill();
+            battle.getMesageList().add(battle.getTurnCount() + messageSource.getMessage("turn.end", null, locale));
+            battle.setTurnCount(battle.getTurnCount() + 1);
+
+            session.setAttribute(BattleObject, battle);
+            session.setAttribute(ScreenMode,   TurnEnd);
+        }
+        return mv;
+    }
+
+    // ターン終了
+    @GetMapping("/end")
+    public ModelAndView end(ModelAndView mv, HttpSession session) {
+        // いつもの処理
+        mv.setViewName(BattleScreen);
+        Battle battle = (Battle) session.getAttribute(BattleObject);
+
+        session.setAttribute(BattleObject, battle);
+        session.setAttribute(ScreenMode,   BeforeTurn);
+        return mv;
+    }
 }
