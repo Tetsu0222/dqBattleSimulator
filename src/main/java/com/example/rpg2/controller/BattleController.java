@@ -32,59 +32,49 @@ public class BattleController {
 	private final String TurnEnd = "end";
 	private final String BeforeTurn = "log";
 	private final String BattleResult = "result";
-	
-	//TODO:フィールドに持たない人達A
-	private Queue<Integer> turnqueue;
 
 	//戦闘開始
 	@GetMapping( "/start" )
 	public ModelAndView start( ModelAndView mv , Locale locale , HttpSession session) {
-		
 		//いつもの処理
 		mv.setViewName( BattleScreen );
 		Battle battle = (Battle)session.getAttribute( BattleObject );
-		
 		//前回までのログを消去
 		battle.getMesageList().clear();
-		
 		//各キャラクターの行動順を規定
 		battle.turn();
-		
 		//各キャラクターの座標を素早さが高い順（降順）でソートしたリストを取得
 		List<Entry<Integer, Integer>> turnList = battle.getTurnList();
-		
 		//素早さで順でソートされたリストから、各キャラクターの座標だけ抽出してキューへ格納
 		//このキューを用いて具体的な戦闘処理を実施する。
-		this.turnqueue = TurnQueue.getTurnQueue( turnList );
-		
+		Queue<Integer> turnqueue = TurnQueue.getTurnQueue( turnList );
 		//ターンの最初に発動する効果を処理
 		battle.startSkill();
 		battle.getMesageList().add( battle.getTurnCount() + messageSource.getMessage( "turn.start" , null , locale ) );
 		session.setAttribute( BattleObject , battle );
 		session.setAttribute( ScreenMode   , TurnProgression );
-
+		session.setAttribute( "turnqueue"   , turnqueue );
 		return mv;
 	}
 
 	//戦闘続行
 	@GetMapping( "/next" )
 	public ModelAndView next( ModelAndView mv , Locale locale , HttpSession session) {
-		
 		//いつもの処理
 		mv.setViewName( BattleScreen );
 		Battle battle = (Battle)session.getAttribute( BattleObject );
-	
 		//前回までのログを消去
 		battle.getMesageList().clear();
+		//キューを取得
+		Queue<Integer> turnqueue = (Queue<Integer>) session.getAttribute( "turnqueue" );
+
 		if( turnqueue.peek() == null ) {
 			//ターン終了時に発動する処理
 			battle.endSkill();
 			battle.getMesageList().add( battle.getTurnCount() + messageSource.getMessage( "turn.end" , null , locale ) );
 			battle.setTurnCount( battle.getTurnCount() + 1 );
-
 			session.setAttribute( BattleObject , battle );
 			session.setAttribute( ScreenMode   , TurnEnd  );
-
 			return mv;
 		}
 
@@ -92,13 +82,10 @@ public class BattleController {
 		Integer actionObj = turnqueue.poll();
 		BattleProgressService battleProgressService = new BattleProgressService();
 		boolean possible = battleProgressService.turnAction( battle , actionObj , turnqueue);
-
 		//ターン終了判定
 		if(possible){
-
 			//判定結果trueであれば行動実行
 			battle.startBattle( actionObj );
-			
 			//戦闘終了判定
 			if( battle.getTargetSetAlly().size() == 0 ) {
 				battle.getMesageList().add( messageSource.getMessage( "lose.message" , null , locale ) );
@@ -112,14 +99,12 @@ public class BattleController {
 				session.setAttribute( BattleObject , battle );
 				session.setAttribute( ScreenMode , TurnProgression );
 			}
-
 		//全員の行動が終了
 		}else{
 			//ターン終了時に発動する処理
 			battle.endSkill();
 			battle.getMesageList().add( battle.getTurnCount() + messageSource.getMessage( "turn.end" , null , locale ) );
 			battle.setTurnCount( battle.getTurnCount() + 1 );
-
 			session.setAttribute( BattleObject , battle );
 			session.setAttribute( ScreenMode   , TurnEnd  );
 		}
@@ -129,14 +114,11 @@ public class BattleController {
 	//ターン終了
 	@GetMapping( "/end" )
 	public ModelAndView end( ModelAndView mv , HttpSession session) {
-		
 		//いつもの処理
 		mv.setViewName( BattleScreen );
 		Battle battle = (Battle)session.getAttribute( BattleObject );
-
 		session.setAttribute( BattleObject , battle );
 		session.setAttribute( ScreenMode , BeforeTurn );
-		
 		return mv;
 	}
 }

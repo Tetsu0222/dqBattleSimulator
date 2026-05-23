@@ -187,10 +187,13 @@ public class BattleSupportAttack {
 		
 		//対象がターン中に死亡している場合は、別の生存対象へ処理対象を変更
 		if( monsterData.getSurvival() == 0 ) {
-			//生存している敵エネミーセットから座標を取得
+			if( targetSetEnemy.isEmpty() ) {
+				return; // 攻撃対象が全滅しているので処理終了
+			}
 			target = targetSetEnemy.stream().findAny().orElse( 0 );
 			monsterData = monsterDataMap.get( target );
 		}
+
 		
 		//攻撃処理と結果の格納
 		monsterData = taregetEnemyAction.action( monsterData );

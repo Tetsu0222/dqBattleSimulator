@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-	
 	<head>
 		<meta charset="UTF-8">
 		<title>DragonBattle</title>
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
 		rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 	</head>
-	
 	<body>
 		<h2>ドラ〇エ・シミュレーション</h2>
 		<form th:action="@{/battle}" method="get">
@@ -19,7 +17,6 @@
 								<option th:each="a : ${allyList}" th:value="${a.id}" th:text="${a.name}" th:selected="${a.id} == *{PLV}"></option>
 							</select>
 					</div>
-
 					<div class="col-3">
 						<h4>プレイヤー2を選択してください</h4>
 							<select name="PLV2">
@@ -27,7 +24,6 @@
 								<option th:each="a : ${allyList}" th:value="${a.id}" th:text="${a.name}" th:selected="${a.id} == *{PLV2}"></option>
 							</select>
 					</div>
-
 					<div class="col-3">
 						<h4>プレイヤー3を選択してください</h4>
 							<select name="PLV3">
@@ -35,7 +31,6 @@
 								<option th:each="a : ${allyList}" th:value="${a.id}" th:text="${a.name}" th:selected="${a.id} == *{PLV3}"></option>
 							</select>
 					</div>
-
 					<div class="col-3">
 						<h4>プレイヤー4を選択してください</h4>
 							<select name="PLV4">
@@ -45,17 +40,14 @@
 					</div>
 				</div>
 			</div>	
-
 			<div class="container mt-5">
 				<div class="row">
-
 					<div class="col-3">
 						<h4>敵を選んでください</h4>
 							<select name="MLV1">
 								<option th:each="m : ${enemyList}" th:value="${m.id}" th:text="${m.name}" th:selected="${m.id} == *{MLV1}"></option>
 							</select>
 					</div>
-
 					<div class="col-3">
 						<h4>敵を選んでください</h4>
 							<select name="MLV2">
@@ -63,7 +55,6 @@
 								<option th:each="m : ${enemyList}" th:value="${m.id}" th:text="${m.name}" th:selected="${m.id} == *{MLV2}"></option>
 							</select>
 					</div>
-
 					<div class="col-3">
 						<h4>敵を選んでください</h4>
 							<select name="MLV3">
@@ -71,7 +62,6 @@
 								<option th:each="m : ${enemyList}" th:value="${m.id}" th:text="${m.name}" th:selected="${m.id} == *{MLV3}"></option>
 							</select>
 					</div>
-
 					<div class="col-3">
 						<h4>敵を選んでください</h4>
 							<select name="MLV4">
@@ -84,5 +74,4 @@
 			</div>	
 		</form>
 	</body>
-
 </html>
