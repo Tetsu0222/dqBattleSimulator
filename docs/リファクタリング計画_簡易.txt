@@ -1,3 +1,3 @@
-# 不具合
-## 次の対応
-next ⇒ セッションエラーが出る。
+# コントローラーファイル
+## C:\Users\root2\OneDrive\デスクトップ\dqBattleSimulator\src\main\java\com\example\rpg2\controller\BattleController.java
+- private Queue<Integer> turnqueue; のスコープをメソッド内にして、シングルトンでリクエスト間で共有するのを直す。

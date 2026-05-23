@@ -8,7 +8,6 @@ import java.util.Queue;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.rpg2.battle.Battle;
@@ -26,7 +25,6 @@ public class BattleController {
 	private final MessageSource messageSource;
 
 	//定数
-	private final String keys = "key";
 	private final String BattleScreen = "battle";
 	private final String BattleObject = "battle";
 	private final String TurnProgression = "battle";
@@ -34,47 +32,9 @@ public class BattleController {
 	private final String TurnEnd = "end";
 	private final String BeforeTurn = "log";
 	private final String BattleResult = "result";
-	private final String NormalAttack = "attackTargetMonster";
 	
 	//TODO:フィールドに持たない人達A
 	private Queue<Integer> turnqueue;
-
-	//通常攻撃を選択
-	@GetMapping( "/attack/{myKey}" )
-	public ModelAndView attack( @PathVariable int myKey ,
-								ModelAndView mv , HttpSession session ) {
-		mv.setViewName( BattleScreen );
-		mv.addObject( "myKey" , myKey );
-		session.setAttribute( ScreenMode , NormalAttack );
-		return mv;
-
-	}
-
-	//通常攻撃のターゲット選択(敵）
-	@GetMapping( "/target/attack/monster/{myKey}/{targetKey}" )
-	public ModelAndView attackTargetMonster( @PathVariable int myKey ,
-											 @PathVariable int targetKey ,
-											 ModelAndView mv , HttpSession session) {
-		mv.setViewName( BattleScreen );
-		Battle battle = (Battle)session.getAttribute( BattleObject );
-		battle.selectionAttack( myKey , targetKey );
-		session.setAttribute( BattleObject , battle );
-		session.setAttribute( ScreenMode , BeforeTurn );
-
-		return mv;
-	}
-
-	//防御を選択
-	@GetMapping( "/defense/{key}" )
-	public ModelAndView defense( @PathVariable( name = keys ) int key ,
-								 ModelAndView mv , HttpSession session) {
-		
-		mv.setViewName( BattleScreen );
-		Battle battle = (Battle)session.getAttribute( BattleObject );
-		battle.selectionDefense( key );
-		
-		return mv;
-	}
 
 	//戦闘開始
 	@GetMapping( "/start" )
