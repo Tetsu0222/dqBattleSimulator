@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.rpg2.dto.response.BattleRecord;
+import com.example.rpg2.domain.BattleResultType;
 import com.example.rpg2.domain.BattleState;
 import com.example.rpg2.service.battle.BattleService;
 
@@ -41,7 +42,6 @@ public class BattleController {
     // 戦闘開始
     @GetMapping("/start")
     public ModelAndView start(ModelAndView mv, Locale locale, HttpSession session) {
-        // いつもの処理
         mv.setViewName(BattleScreen);
         BattleRecord battleRecord = (BattleRecord) session.getAttribute(BattleRecordKey);
         BattleState  battleState  = (BattleState)  session.getAttribute(BattleStateKey);
@@ -58,7 +58,6 @@ public class BattleController {
     // 戦闘続行
     @GetMapping("/next")
     public ModelAndView next(ModelAndView mv, Locale locale, HttpSession session) {
-        // いつもの処理
         mv.setViewName(BattleScreen);
         BattleRecord battleRecord = (BattleRecord) session.getAttribute(BattleRecordKey);
         BattleState  battleState  = (BattleState)  session.getAttribute(BattleStateKey);
@@ -82,17 +81,22 @@ public class BattleController {
             battleService.startBattleSetting(battleRecord, battleState);
 
             // 戦闘終了判定
-            if (battleState.getTargetSetAlly().size() == 0) {
-                battleState.getMesageList().add(getMessage("lose.message", locale));
-                session.setAttribute(BattleStateKey, battleState);
-                session.setAttribute(ScreenMode,    BattleResult);
-            } else if (battleState.getTargetSetEnemy().size() == 0) {
-                battleState.getMesageList().add(getMessage("win.message", locale));
-                session.setAttribute(BattleStateKey, battleState);
-                session.setAttribute(ScreenMode,    BattleResult);
-            } else {
-                session.setAttribute(BattleStateKey, battleState);
-                session.setAttribute(ScreenMode,    TurnProgression);
+            BattleResultType result = battleService.judgeBattleResult(battleState);
+            switch (result) {
+                case LOSE -> {
+                    battleState.getMesageList().add(getMessage("lose.message", locale));
+                    session.setAttribute(BattleStateKey, battleState);
+                    session.setAttribute(ScreenMode,    BattleResult);
+                }
+                case WIN -> {
+                    battleState.getMesageList().add(getMessage("win.message", locale));
+                    session.setAttribute(BattleStateKey, battleState);
+                    session.setAttribute(ScreenMode,    BattleResult);
+                }
+                case CONTINUE -> {
+                    session.setAttribute(BattleStateKey, battleState);
+                    session.setAttribute(ScreenMode,    TurnProgression);
+                }
             }
         // 全員の行動が終了
         } else {
@@ -107,7 +111,6 @@ public class BattleController {
     // ターン終了
     @GetMapping("/end")
     public ModelAndView end(ModelAndView mv, HttpSession session) {
-        // いつもの処理
         mv.setViewName(BattleScreen);
         session.setAttribute(ScreenMode, BeforeTurn);
         return mv;
