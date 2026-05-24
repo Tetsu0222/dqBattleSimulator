@@ -96,6 +96,7 @@ public class CreateCharacterSet {
 	}
 
 	//エネミーキャラクターの生成と名前の加工を行うメソッド
+	@SuppressWarnings("null")
 	public EnemyBuildResult createEnemySet( List<Integer> repositoryEnemyIdList ){
 
 		//名前区別用のコレクション
