@@ -37,31 +37,33 @@ class DefenseControllerTest {
     // --- defense() のテスト ---------------------------------------------------
     @Test
     void defense_ビュー名にbattleが設定される() {
-        Integer myKey = 3;
+        int myKey = 3;
         ModelAndView mv = defenseController.defense(myKey , new ModelAndView() , session);
         assertThat(mv.getViewName()).isEqualTo(BattleScreen);
     }
 
     @Test
     void defense_サービスへmyKeyとBattleStateが渡される() {
+        int myKey = 3;
         // BeforeEachでセッションが初期化されるため、インスタンス化
         BattleState state = new BattleState();
         session.setAttribute(BattleStateKey, state);
 
-        defenseController.defense(3, new ModelAndView(), session);
+        defenseController.defense(myKey, new ModelAndView(), session);
 
         // Mockitoのverify()はモックに対するメソッド呼び出しを監視する。
         // コントローラが正しい引数でサービスを呼んだか検証
         // verify はモックに対してしか使えない。
-        verify(battleManagementService).selectionDefense(3, state);
+        verify(battleManagementService).selectionDefense(myKey, state);
     }
 
     @Test
     void defense_セッションにbattleStateが再格納される(){
+        int myKey = 3;
         BattleState state = new BattleState();
         session.setAttribute(BattleStateKey, state);
 
-        defenseController.defense(3, new ModelAndView(), session);
+        defenseController.defense(myKey, new ModelAndView(), session);
 
         // 同じインスタンス同時か比較している。
         assertThat(session.getAttribute(BattleStateKey)).isSameAs(state);
