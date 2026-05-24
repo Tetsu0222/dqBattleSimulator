@@ -10,9 +10,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.example.rpg2.dto.response.BattleRecord;
 import com.example.rpg2.domain.BattleState;
+import com.example.rpg2.domain.MagicSkillType;
 import com.example.rpg2.entity.Skill;
 import com.example.rpg2.repository.SkillRepository;
 import com.example.rpg2.service.battle.BattleManagementService;
+import com.example.rpg2.service.battle.MagicSkillService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -23,16 +25,16 @@ public class SkillController {
 
     private final SkillRepository skillRepository;
     private final BattleManagementService battleManagementService;
+    private final MagicSkillService magicSkillService;
 
     // すべての特技の選択画面を表示
     @GetMapping("/skill/{myKey}")
-    public ModelAndView skill(@PathVariable int myKey,
-                              ModelAndView mv, HttpSession session) {
+    public ModelAndView skill(@PathVariable int myKey,ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
         BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
 
-        // 発動可能な魔法一覧を表示
-        List<Skill> skillList = battleRecord.partyMap().get(myKey).getSkillList();
+        // 発動可能な特技一覧を表示
+        List<Skill> skillList = magicSkillService.getMagicOrSkillList(MagicSkillType.SKILL, battleRecord, myKey);
 
         mv.addObject("skillList", skillList);
         mv.addObject("myKey", myKey);
@@ -42,79 +44,59 @@ public class SkillController {
 
     // 攻撃特技の選択画面を表示
     @GetMapping("/skill/attack/{myKey}")
-    public ModelAndView skillA(@PathVariable int myKey,
-                               ModelAndView mv, HttpSession session) {
+    public ModelAndView skillA(@PathVariable int myKey,ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
         BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
 
         // 発動可能な特技一覧を表示
-        List<Skill> skillList = battleRecord.partyMap().get(myKey).getSkillList();
-        List<Skill> skillListA = skillList.stream()
-                .filter(s -> s.getCategory().equals("targetenemy"))
-                .filter(s -> s.getBuffcategory().equals("no"))
-                .collect(Collectors.toList());
+        List<Skill> skillList = magicSkillService.getAttackMagicOrSkillList(MagicSkillType.SKILL, battleRecord, myKey);
 
-        mv.addObject("skillList", skillListA);
+        mv.addObject("skillList", skillList);
         mv.addObject("myKey", myKey);
         session.setAttribute("mode", "skill");
         return mv;
     }
 
-    // 回復魔法の選択画面を表示
+    // 回復特技の選択画面を表示
     @GetMapping("/skill/recovery/{myKey}")
-    public ModelAndView skillR(@PathVariable int myKey,
-                               ModelAndView mv, HttpSession session) {
+    public ModelAndView skillR(@PathVariable int myKey,ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
         BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
 
         // 発動可能な特技一覧を表示
-        List<Skill> skillList = battleRecord.partyMap().get(myKey).getSkillList();
-        List<Skill> skillListA = skillList.stream()
-                .filter(s -> s.getCategory().equals("targetally") || s.getCategory().equals("resuscitationskill"))
-                .filter(s -> s.getBuffcategory().equals("no"))
-                .collect(Collectors.toList());
+        List<Skill> skillList = magicSkillService.getRecoveryMagicOrSkillList(MagicSkillType.SKILL, battleRecord, myKey);
 
-        mv.addObject("skillList", skillListA);
+        mv.addObject("skillList", skillList);
         mv.addObject("myKey", myKey);
         session.setAttribute("mode", "skill");
         return mv;
     }
 
-    // 補助魔法の選択画面を表示
+    // 補助特技の選択画面を表示
     @GetMapping("/skill/buff/{myKey}")
-    public ModelAndView skillB(@PathVariable int myKey,
-                               ModelAndView mv, HttpSession session) {
+    public ModelAndView skillB(@PathVariable int myKey,ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
         BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
 
         // 発動可能な特技一覧を表示
-        List<Skill> skillList = battleRecord.partyMap().get(myKey).getSkillList();
-        List<Skill> skillListA = skillList.stream()
-                .filter(s -> s.getCategory().equals("targetenemy"))
-                .filter(s -> !s.getBuffcategory().equals("no"))
-                .collect(Collectors.toList());
+        List<Skill> skillList = magicSkillService.getBuffMagicOrSkillList(MagicSkillType.SKILL, battleRecord, myKey);
 
-        mv.addObject("skillList", skillListA);
+        mv.addObject("skillList", skillList);
         mv.addObject("myKey", myKey);
         session.setAttribute("mode", "skill");
         return mv;
     }
 
-    // 妨害魔法の選択画面を表示
+    // 妨害特技の選択画面を表示
     @GetMapping("/skill/debuff/{myKey}")
-    public ModelAndView skillD(@PathVariable int myKey,
-                               ModelAndView mv, HttpSession session) {
+    public ModelAndView skillD(@PathVariable int myKey,ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
         BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
 
         // 発動可能な特技一覧を表示
-        List<Skill> skillList = battleRecord.partyMap().get(myKey).getSkillList();
-        List<Skill> skillListA = skillList.stream()
-                .filter(s -> s.getCategory().equals("targetenemy"))
-                .filter(s -> !s.getBuffcategory().equals("no"))
-                .collect(Collectors.toList());
+        List<Skill> skillList = magicSkillService.getDebuffMagicOrSkillList(MagicSkillType.SKILL, battleRecord, myKey);
 
-        mv.addObject("skillList", skillListA);
+        mv.addObject("skillList", skillList);
         mv.addObject("myKey", myKey);
         session.setAttribute("mode", "skill");
         return mv;
@@ -122,8 +104,7 @@ public class SkillController {
 
     // 特技を選択
     @GetMapping("/skill/add/{id}/{myKey}")
-    public ModelAndView skill2(@PathVariable int id, @PathVariable int myKey,
-                               ModelAndView mv, HttpSession session) {
+    public ModelAndView skill2(@PathVariable int id, @PathVariable int myKey,ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
         BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
         BattleState  battleState  = (BattleState)  session.getAttribute("battleState");
@@ -173,8 +154,7 @@ public class SkillController {
 
     // ターゲット選択（味方への特技）
     @GetMapping("/target/skill/ally/{myKey}/{targetKey}")
-    public ModelAndView targetAlly(@PathVariable int myKey, @PathVariable int targetKey,
-                                   ModelAndView mv, HttpSession session) {
+    public ModelAndView targetAlly(@PathVariable int myKey, @PathVariable int targetKey,ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
         BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
         BattleState  battleState  = (BattleState)  session.getAttribute("battleState");
@@ -189,8 +169,7 @@ public class SkillController {
 
     // ターゲット選択（攻撃特技）
     @GetMapping("/target/skill/monster/{myKey}/{targetKey}")
-    public ModelAndView skillTargetMonster(@PathVariable int myKey, @PathVariable int targetKey,
-                                           ModelAndView mv, HttpSession session) {
+    public ModelAndView skillTargetMonster(@PathVariable int myKey, @PathVariable int targetKey,ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
         BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
         BattleState  battleState  = (BattleState)  session.getAttribute("battleState");

@@ -1,7 +1,6 @@
 package com.example.rpg2.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +12,8 @@ import com.example.rpg2.domain.BattleState;
 import com.example.rpg2.entity.Magic;
 import com.example.rpg2.repository.MagicRepository;
 import com.example.rpg2.service.battle.BattleManagementService;
+import com.example.rpg2.service.battle.MagicSkillService;
+import com.example.rpg2.domain.MagicSkillType;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -23,16 +24,16 @@ public class MagicController {
 
     private final MagicRepository magicRepository;
     private final BattleManagementService battleManagementService;
+    private final MagicSkillService magicSkillService;
 
     // すべての魔法の選択画面を表示
     @GetMapping("/magic/{myKey}")
-    public ModelAndView magic(@PathVariable int myKey,
-                              ModelAndView mv, HttpSession session) {
+    public ModelAndView magic(@PathVariable int myKey,ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
         BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
 
         // 発動可能な魔法一覧を表示
-        List<Magic> magicList = battleRecord.partyMap().get(myKey).getMagicList();
+        List<Magic> magicList = magicSkillService.getMagicOrSkillList(MagicSkillType.MAGIC, battleRecord, myKey);
 
         mv.addObject("magicList", magicList);
         mv.addObject("mykey", myKey);
@@ -42,19 +43,14 @@ public class MagicController {
 
     // 攻撃魔法の選択画面を表示
     @GetMapping("/magic/attack/{myKey}")
-    public ModelAndView magicA(@PathVariable int myKey,
-                               ModelAndView mv, HttpSession session) {
+    public ModelAndView magicA(@PathVariable int myKey,ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
         BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
 
-        // 発動可能な魔法一覧を表示
-        List<Magic> magicList = battleRecord.partyMap().get(myKey).getMagicList();
-        List<Magic> magicListA = magicList.stream()
-                .filter(s -> s.getCategory().equals("targetenemy"))
-                .filter(s -> s.getBuffcategory().equals("no"))
-                .collect(Collectors.toList());
+        // 発動可能な攻撃魔法一覧を表示
+        List<Magic> magicList = magicSkillService.getAttackMagicOrSkillList(MagicSkillType.MAGIC, battleRecord, myKey);
 
-        mv.addObject("magicList", magicListA);
+        mv.addObject("magicList", magicList);
         mv.addObject("mykey", myKey);
         session.setAttribute("mode", "magic");
         return mv;
@@ -62,19 +58,14 @@ public class MagicController {
 
     // 回復魔法の選択画面を表示
     @GetMapping("/magic/recovery/{myKey}")
-    public ModelAndView magicR(@PathVariable int myKey,
-                               ModelAndView mv, HttpSession session) {
+    public ModelAndView magicR(@PathVariable int myKey,ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
         BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
 
         // 発動可能な魔法一覧を表示
-        List<Magic> magicList = battleRecord.partyMap().get(myKey).getMagicList();
-        List<Magic> magicListR = magicList.stream()
-                .filter(s -> s.getCategory().equals("targetally") || s.getCategory().equals("resuscitationmagic"))
-                .filter(s -> s.getBuffcategory().equals("no"))
-                .collect(Collectors.toList());
+        List<Magic> magicList = magicSkillService.getRecoveryMagicOrSkillList(MagicSkillType.MAGIC, battleRecord, myKey);
 
-        mv.addObject("magicList", magicListR);
+        mv.addObject("magicList", magicList);
         mv.addObject("mykey", myKey);
         session.setAttribute("mode", "magic");
         return mv;
@@ -82,19 +73,14 @@ public class MagicController {
 
     // 補助魔法の選択画面を表示
     @GetMapping("/magic/buff/{myKey}")
-    public ModelAndView magicB(@PathVariable int myKey,
-                               ModelAndView mv, HttpSession session) {
+    public ModelAndView magicB(@PathVariable int myKey,ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
         BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
 
         // 発動可能な魔法一覧を表示
-        List<Magic> magicList = battleRecord.partyMap().get(myKey).getMagicList();
-        List<Magic> magicListB = magicList.stream()
-                .filter(s -> s.getCategory().equals("targetally"))
-                .filter(s -> !s.getBuffcategory().equals("no"))
-                .collect(Collectors.toList());
+        List<Magic> magicList = magicSkillService.getBuffMagicOrSkillList(MagicSkillType.MAGIC, battleRecord, myKey);
 
-        mv.addObject("magicList", magicListB);
+        mv.addObject("magicList", magicList);
         mv.addObject("mykey", myKey);
         session.setAttribute("mode", "magic");
         return mv;
@@ -102,19 +88,14 @@ public class MagicController {
 
     // 妨害魔法の選択画面を表示
     @GetMapping("/magic/debuff/{myKey}")
-    public ModelAndView magicD(@PathVariable int myKey,
-                               ModelAndView mv, HttpSession session) {
+    public ModelAndView magicD(@PathVariable int myKey,ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
         BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
 
         // 発動可能な魔法一覧を表示
-        List<Magic> magicList = battleRecord.partyMap().get(myKey).getMagicList();
-        List<Magic> magicListA = magicList.stream()
-                .filter(s -> s.getCategory().equals("targetenemy"))
-                .filter(s -> !s.getBuffcategory().equals("no"))
-                .collect(Collectors.toList());
+        List<Magic> magicList = magicSkillService.getDebuffMagicOrSkillList(MagicSkillType.MAGIC, battleRecord, myKey);
 
-        mv.addObject("magicList", magicListA);
+        mv.addObject("magicList", magicList);
         mv.addObject("mykey", myKey);
         session.setAttribute("mode", "magic");
         return mv;

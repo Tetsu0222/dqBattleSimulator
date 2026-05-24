@@ -11,7 +11,7 @@ import lombok.Data;
 @Entity
 @Table( name = "magiclist" )
 @Data
-public class Magic {
+public class Magic implements Castable {
 	
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
