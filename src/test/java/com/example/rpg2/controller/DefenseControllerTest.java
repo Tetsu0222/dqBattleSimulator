@@ -52,6 +52,7 @@ class DefenseControllerTest {
 
         // Mockitoのverify()はモックに対するメソッド呼び出しを監視する。
         // コントローラが正しい引数でサービスを呼んだか検証
+        // verify はモックに対してしか使えない。
         verify(battleManagementService).selectionDefense(3, state);
     }
 
