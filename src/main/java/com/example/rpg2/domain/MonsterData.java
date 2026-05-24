@@ -47,6 +47,7 @@ public class MonsterData {
 	//状態異常を管理
 	Set<Status> statusSet = new HashSet<>();
 
+	@SuppressWarnings("null")
 	public MonsterData( Monster monster , MonsterPatternRepository monsterPatternRepository , Integer enemyId ) {
 		
 		this.name = monster.getName();

@@ -58,6 +58,7 @@ public class AllyData {
 	Set<String> turnEndSkillSet = new HashSet<>();
 	
 	
+	@SuppressWarnings("null")
 	public AllyData( Ally ally , MagicRepository magicRepository , SkillRepository skillRepository , Integer allyId ) {
 
 		this.name = ally.getName();
