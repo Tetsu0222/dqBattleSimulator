@@ -1,7 +1,5 @@
 package com.example.rpg2.service.battle;
 
-import java.util.Queue;
-
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
