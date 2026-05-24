@@ -1,10 +1,10 @@
-package com.example.rpg2.dto;
+package com.example.rpg2.dto.response;
 
 import java.util.List;
 import java.util.Map;
 
-import com.example.rpg2.battle.AllyData;
-import com.example.rpg2.battle.MonsterData;
+import com.example.rpg2.domain.AllyData;
+import com.example.rpg2.domain.MonsterData;
 
 //戦闘の固定情報を保持する不変DTO
 public record BattleRecord (

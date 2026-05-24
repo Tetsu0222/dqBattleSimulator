@@ -2,7 +2,7 @@ package com.example.rpg2.action.endskill;
 
 import java.util.Random;
 
-import com.example.rpg2.battle.AllyData;
+import com.example.rpg2.domain.AllyData;
 
 public class AutoRecovery implements EndSkill{
 	

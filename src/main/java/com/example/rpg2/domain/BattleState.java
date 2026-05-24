@@ -1,12 +1,10 @@
-package com.example.rpg2.dto;
+package com.example.rpg2.domain;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import com.example.rpg2.battle.Target;
 
 import lombok.Data;
 

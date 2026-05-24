@@ -1,4 +1,4 @@
-package com.example.rpg2.battle;
+package com.example.rpg2.domain;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,8 +37,7 @@ public class MonsterData {
 	private Integer currentSPE;
 	
 	private int survival;
-	
-	
+
 	//モンスターの行動パターンを格納
 	List<MonsterPattern> patternList = new ArrayList<>();
 	
@@ -47,13 +46,12 @@ public class MonsterData {
 	
 	//状態異常を管理
 	Set<Status> statusSet = new HashSet<>();
-	
-	
+
 	public MonsterData( Monster monster , MonsterPatternRepository monsterPatternRepository , Integer enemyId ) {
 		
 		this.name = monster.getName();
 		this.enemyId = enemyId;
-		
+
 		//固定ステータスの設定
 		this.maxHP = monster.getHp();
 		this.maxMP = monster.getMp();
@@ -63,14 +61,14 @@ public class MonsterData {
 		this.pattern = monster.getPattern();
 		this.actions = monster.getActions();
 		this.resistance = monster.getResistance();
-		
+
 		//変動ステータスの設定
 		this.currentHp  = monster.getHp();
 		this.currentMp  = monster.getMp();
 		this.currentATK = monster.getAtk();
 		this.currentDEF = monster.getDef();
 		this.currentSPE = monster.getSpe();
-		
+
 		//モンスターの行動パターンを設定
 		String[] patternSource = pattern.split( "," );
 		List<String> patternSourceList = Arrays.asList( patternSource );
@@ -78,20 +76,19 @@ public class MonsterData {
 		.map( s -> Integer.parseInt( s ) )
 		.map( s ->  monsterPatternRepository.findById( s ) )
 		.forEach( s -> patternList.add( s.orElseThrow() ));
-		
+
 		//モンスターの行動回数を設定
 		String[] actionsSource = actions.split( "," );
 		List<String> actionsSourceList = Arrays.asList( actionsSource );
 		actionsSourceList.stream()
 		.map( s -> Integer.parseInt( s ) )
 		.forEach( s -> actionsList.add( s ));
-		
+
 		//生存設定
 		this.survival = 1;
 		this.statusSet.add( new Normal() );
 	}
-	
-	
+
 	//蘇生時のステータス処理
 	public void resuscitation() {
 		this.survival = 1;
@@ -100,15 +97,12 @@ public class MonsterData {
 		this.currentSPE = defaultSPE;
 		this.statusSet.add( new Normal() );
 	}
-	
+
 	public int hashCode() {
-		
 		return enemyId.hashCode();
 	}
-	
+
 	public boolean equals( Object obj ) {
-		
 		return this.hashCode() == obj.hashCode();
 	}
-
 }

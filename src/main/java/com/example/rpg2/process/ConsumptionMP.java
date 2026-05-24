@@ -1,6 +1,6 @@
 package com.example.rpg2.process;
 
-import com.example.rpg2.battle.AllyData;
+import com.example.rpg2.domain.AllyData;
 import com.example.rpg2.entity.Magic;
 import com.example.rpg2.entity.Skill;
 

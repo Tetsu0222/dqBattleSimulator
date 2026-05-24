@@ -7,10 +7,10 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
-import com.example.rpg2.battle.AllyData;
-import com.example.rpg2.battle.MonsterData;
-import com.example.rpg2.dto.EnemyBuildResult;
-import com.example.rpg2.dto.PartyBuildResult;
+import com.example.rpg2.domain.AllyData;
+import com.example.rpg2.domain.MonsterData;
+import com.example.rpg2.domain.EnemyBuildResult;
+import com.example.rpg2.domain.PartyBuildResult;
 import com.example.rpg2.repository.AllyRepository;
 import com.example.rpg2.repository.MagicRepository;
 import com.example.rpg2.repository.MonsterPatternRepository;

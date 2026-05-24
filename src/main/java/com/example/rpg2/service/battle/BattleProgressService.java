@@ -9,10 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.example.rpg2.action.endskill.SortingEndSkill;
 import com.example.rpg2.action.startskill.SortingStartSkill;
-import com.example.rpg2.battle.AllyData;
-import com.example.rpg2.battle.MonsterData;
-import com.example.rpg2.dto.BattleRecord;
-import com.example.rpg2.dto.BattleState;
+import com.example.rpg2.domain.AllyData;
+import com.example.rpg2.domain.MonsterData;
+import com.example.rpg2.dto.response.BattleRecord;
+import com.example.rpg2.domain.BattleState;
 import com.example.rpg2.entity.Magic;
 import com.example.rpg2.entity.Skill;
 import com.example.rpg2.process.BadStatusBefore;
@@ -150,7 +150,7 @@ public class BattleProgressService {
 
 		for( int index : battleState.getTargetSetAlly() ) {
 
-			com.example.rpg2.battle.Target target = battleState.getTargetMap().get( index );
+			com.example.rpg2.domain.Target target = battleState.getTargetMap().get( index );
 			AllyData allyData = battleRecord.partyMap().get( index );
 
 			//防御の発動処理

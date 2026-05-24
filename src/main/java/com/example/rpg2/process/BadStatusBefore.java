@@ -3,8 +3,8 @@ package com.example.rpg2.process;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.example.rpg2.battle.AllyData;
-import com.example.rpg2.battle.MonsterData;
+import com.example.rpg2.domain.AllyData;
+import com.example.rpg2.domain.MonsterData;
 import com.example.rpg2.status.Status;
 
 import lombok.Data;

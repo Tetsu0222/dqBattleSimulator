@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.example.rpg2.action.TargetAllyAction;
-import com.example.rpg2.battle.AllyData;
+import com.example.rpg2.domain.AllyData;
 import com.example.rpg2.entity.Magic;
 import com.example.rpg2.status.HolyBarrier;
 import com.example.rpg2.status.Normal;

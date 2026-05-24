@@ -3,9 +3,9 @@ package com.example.rpg2.process;
 import java.util.Map;
 import java.util.Set;
 
-import com.example.rpg2.battle.AllyData;
-import com.example.rpg2.battle.MonsterData;
-import com.example.rpg2.battle.Target;
+import com.example.rpg2.domain.AllyData;
+import com.example.rpg2.domain.MonsterData;
+import com.example.rpg2.domain.Target;
 import com.example.rpg2.status.Dead;
 import com.example.rpg2.status.Status;
 

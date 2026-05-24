@@ -1,4 +1,4 @@
-package com.example.rpg2.battle;
+package com.example.rpg2.domain;
 
 import java.util.ArrayList;
 import java.util.Arrays;

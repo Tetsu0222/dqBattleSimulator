@@ -3,8 +3,8 @@ package com.example.rpg2.action.magic;
 import java.util.Random;
 
 import com.example.rpg2.action.TaregetEnemyAction;
-import com.example.rpg2.battle.AllyData;
-import com.example.rpg2.battle.MonsterData;
+import com.example.rpg2.domain.AllyData;
+import com.example.rpg2.domain.MonsterData;
 import com.example.rpg2.entity.Magic;
 import com.example.rpg2.process.Funeral;
 import com.example.rpg2.process.IsDefense;

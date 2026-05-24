@@ -1,6 +1,6 @@
 package com.example.rpg2.action.startskill;
 
-import com.example.rpg2.battle.AllyData;
+import com.example.rpg2.domain.AllyData;
 
 public interface StartSkill {
 	

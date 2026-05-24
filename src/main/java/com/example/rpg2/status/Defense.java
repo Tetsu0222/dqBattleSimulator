@@ -1,7 +1,7 @@
 package com.example.rpg2.status;
 
-import com.example.rpg2.battle.AllyData;
-import com.example.rpg2.battle.MonsterData;
+import com.example.rpg2.domain.AllyData;
+import com.example.rpg2.domain.MonsterData;
 
 public class Defense implements Status{
 	

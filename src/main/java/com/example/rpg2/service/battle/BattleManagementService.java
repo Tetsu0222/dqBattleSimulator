@@ -10,11 +10,11 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.example.rpg2.battle.AllyData;
-import com.example.rpg2.battle.MonsterData;
-import com.example.rpg2.battle.Target;
-import com.example.rpg2.dto.BattleRecord;
-import com.example.rpg2.dto.BattleState;
+import com.example.rpg2.domain.AllyData;
+import com.example.rpg2.domain.MonsterData;
+import com.example.rpg2.domain.Target;
+import com.example.rpg2.dto.response.BattleRecord;
+import com.example.rpg2.domain.BattleState;
 import com.example.rpg2.entity.Magic;
 import com.example.rpg2.entity.Skill;
 import com.example.rpg2.process.TurnOrderCreate;

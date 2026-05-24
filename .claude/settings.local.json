@@ -5,7 +5,21 @@
       "PowerShell(& 'c:\\\\Users\\\\root2\\\\OneDrive\\\\�f�X�N�g�b�v\\\\dqBattleSimulator\\\\gradlew.bat' -p 'c:\\\\Users\\\\root2\\\\OneDrive\\\\�f�X�N�g�b�v\\\\dqBattleSimulator' compileJava -q 2>&1)",
       "Bash(./gradlew compileJava -q)",
       "Bash(echo \"EXIT=$?\")",
-      "Bash(./gradlew compileJava compileTestJava -q)"
+      "Bash(./gradlew compileJava compileTestJava -q)",
+      "Bash(mkdir -p \"c:/Users/root2/OneDrive/デスクトップ/dqBattleSimulator/src/main/java/com/example/rpg2/domain\" \"c:/Users/root2/OneDrive/デスクトップ/dqBattleSimulator/src/main/java/com/example/rpg2/dto/request\" \"c:/Users/root2/OneDrive/デスクトップ/dqBattleSimulator/src/main/java/com/example/rpg2/dto/response\")",
+      "Bash(git mv *)",
+      "PowerShell($bytes = [System.IO.File]::ReadAllBytes\\(\"c:\\\\Users\\\\root2\\\\OneDrive\\\\デスクトップ\\\\dqBattleSimulator\\\\src\\\\main\\\\java\\\\com\\\\example\\\\rpg2\\\\service\\\\battle\\\\BattleProgressService.java\"\\); $tail = $bytes[-3..-1]; \"Last 3 bytes: $\\($tail | ForEach-Object { '{0:X2}' -f $_ }\\)\")",
+      "Bash(ls pom.xml mvnw)",
+      "Bash(ls build.gradle gradlew)",
+      "Bash(./gradlew compileJava --console=plain)",
+      "PowerShell($bytes = [System.IO.File]::ReadAllBytes\\(\"c:\\\\Users\\\\root2\\\\OneDrive\\\\デスクトップ\\\\dqBattleSimulator\\\\src\\\\main\\\\java\\\\com\\\\example\\\\rpg2\\\\action\\\\EnemyAction.java\"\\); $head = $bytes[0..3]; \"First 4 bytes: $\\($head | ForEach-Object { '{0:X2}' -f $_ }\\)\")",
+      "Bash(awk '{print $2}')",
+      "Bash(grep -E \"^ M .*\\\\.java$\")",
+      "Bash(xargs git restore --)",
+      "PowerShell($utf8NoBom = New-Object System.Text.UTF8Encoding\\($false\\); $testFile = \"c:\\\\Users\\\\root2\\\\OneDrive\\\\デスクトップ\\\\dqBattleSimulator\\\\src\\\\main\\\\java\\\\com\\\\example\\\\rpg2\\\\action\\\\Attack.java\"; $content = [System.IO.File]::ReadAllText\\($testFile, $utf8NoBom\\); $orig = $content; $content = $content -replace 'com\\\\.example\\\\.rpg2\\\\.battle\\\\.MonsterData', 'com.example.rpg2.domain.MonsterData'; $content = $content -replace 'com\\\\.example\\\\.rpg2\\\\.battle\\\\.AllyData', 'com.example.rpg2.domain.AllyData'; [System.IO.File]::WriteAllText\\($testFile, $content, $utf8NoBom\\); \"Changed: $\\($content -ne $orig\\)\"; $bytes = [System.IO.File]::ReadAllBytes\\($testFile\\); \"First 4 bytes: $\\($bytes[0..3] | ForEach-Object { '{0:X2}' -f $_ }\\)\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\root2\\OneDrive\\デスクトップ\\dqBattleSimulator\\src\\main\\java\\com\\example\\rpg2"
     ]
   }
 }

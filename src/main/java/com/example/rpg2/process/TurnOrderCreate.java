@@ -10,8 +10,8 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
-import com.example.rpg2.battle.AllyData;
-import com.example.rpg2.battle.MonsterData;
+import com.example.rpg2.domain.AllyData;
+import com.example.rpg2.domain.MonsterData;
 
 
 public class TurnOrderCreate {

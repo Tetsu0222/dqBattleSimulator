@@ -1,6 +1,6 @@
 package com.example.rpg2.action;
 
-import com.example.rpg2.battle.MonsterData;
+import com.example.rpg2.domain.MonsterData;
 
 public interface TaregetEnemyAction {
 	

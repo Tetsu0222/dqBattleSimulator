@@ -3,7 +3,7 @@ package com.example.rpg2.action.skill;
 import java.util.Random;
 
 import com.example.rpg2.action.TargetAllyAction;
-import com.example.rpg2.battle.AllyData;
+import com.example.rpg2.domain.AllyData;
 import com.example.rpg2.entity.Skill;
 
 import lombok.Data;

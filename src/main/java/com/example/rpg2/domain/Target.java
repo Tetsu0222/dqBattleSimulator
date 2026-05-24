@@ -1,4 +1,4 @@
-package com.example.rpg2.battle;
+package com.example.rpg2.domain;
 
 import java.util.Map;
 import java.util.Set;
@@ -11,7 +11,7 @@ import lombok.Data;
 
 @Data
 public class Target {
-	
+
 	private String  skillName;
 	private Integer executionId;
 	private String  selectionName;
@@ -22,7 +22,6 @@ public class Target {
 	private String  groupName;
 	private Set<Integer> targetSetEnemy = new TreeSet<>();
 	private Set<Integer> targetSetAlly  = new TreeSet<>();
-	
 
 	//通常攻撃
 	public Target( MonsterData monsterData , Integer myKeys , Integer key ) {
@@ -34,7 +33,6 @@ public class Target {
 		this.executionMagic = null;
 		this.targetSetEnemy = null;
 		this.targetSetAlly  = null;
-		
 	}
 	
 	//味方への魔法
@@ -174,5 +172,4 @@ public class Target {
 		this.targetSetEnemy = null;
 		this.targetSetAlly  = null;
 	}
-
 }

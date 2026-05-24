@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.example.rpg2.battle.AllyData;
+import com.example.rpg2.domain.AllyData;
 import com.example.rpg2.entity.MonsterPattern;
 import com.example.rpg2.status.Burn;
 import com.example.rpg2.status.Confusion;

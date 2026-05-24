@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.example.rpg2.battle.MonsterData;
+import com.example.rpg2.domain.MonsterData;
 import com.example.rpg2.entity.Magic;
 import com.example.rpg2.entity.Skill;
 import com.example.rpg2.status.Burn;

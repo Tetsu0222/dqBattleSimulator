@@ -1,4 +1,4 @@
-package com.example.rpg2.dto;
+package com.example.rpg2.dto.request;
 
 import java.util.List;
 import java.util.stream.Stream;

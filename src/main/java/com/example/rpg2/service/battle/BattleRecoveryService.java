@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.example.rpg2.action.SortingRecoveryAction;
 import com.example.rpg2.action.TargetAllyAction;
-import com.example.rpg2.battle.AllyData;
-import com.example.rpg2.dto.BattleRecord;
-import com.example.rpg2.dto.BattleState;
+import com.example.rpg2.domain.AllyData;
+import com.example.rpg2.dto.response.BattleRecord;
+import com.example.rpg2.domain.BattleState;
 import com.example.rpg2.entity.Magic;
 import com.example.rpg2.entity.Skill;
 
@@ -46,7 +46,7 @@ public class BattleRecoveryService {
 		}else{
 
 			Set<Integer> targetSetAlly      = battleState.getTargetSetAlly();
-			Map<Integer, com.example.rpg2.battle.Target> targetMap = battleState.getTargetMap();
+			Map<Integer, com.example.rpg2.domain.Target> targetMap = battleState.getTargetMap();
 
 			//魔法特技の指定回数分の処理
 			for( int i = 0 ; i < SortingRecoveryAction.actions ; i++ ){
