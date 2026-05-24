@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+// リクエスト時：対象URLにアクセスが来ると、Springが自動的に BattleStateGuardInterceptor.preHandle() を呼び出す
 @Component
 public class BattleStateGuardInterceptor implements HandlerInterceptor {
 

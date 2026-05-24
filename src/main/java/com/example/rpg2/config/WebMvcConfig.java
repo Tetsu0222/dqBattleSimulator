@@ -7,15 +7,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import lombok.RequiredArgsConstructor;
 
+// アプリ起動時：WebMvcConfig が「/defense/** など6つのURLに BattleStateGuardInterceptor を貼り付けて」とSpringに依頼する
 @Configuration
 @RequiredArgsConstructor
-public class WebMvcConfig implements WebMvcConfigurer {
+public class WebMvcConfig implements WebMvcConfigurer { // WebMvcConfigurer → Spring MVCの設定をカスタマイズするための入り口
 
     @NonNull
     private final BattleStateGuardInterceptor battleStateGuardInterceptor;
 
-    @Override
+    @Override // インターセプター（割り込み処理）をオーバーライドして登録
     public void addInterceptors(@NonNull InterceptorRegistry registry) {
+        // 「このインターセプターを、これらのURLパターンに適用する」と具体的に指示
         registry.addInterceptor(battleStateGuardInterceptor)
                 .addPathPatterns(
                         "/defense/**",
