@@ -13,7 +13,7 @@ import com.example.rpg2.domain.AllyData;
 import com.example.rpg2.domain.MonsterData;
 import com.example.rpg2.dto.response.BattleRecord;
 import com.example.rpg2.domain.BattleState;
-import com.example.rpg2.process.BadStatusAfter;
+import com.example.rpg2.util.battle.BadStatusAfter;
 
 @Service
 public class BattleStatusService {

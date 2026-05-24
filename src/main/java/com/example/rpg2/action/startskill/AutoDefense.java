@@ -3,7 +3,7 @@ package com.example.rpg2.action.startskill;
 import java.util.Random;
 
 import com.example.rpg2.domain.AllyData;
-import com.example.rpg2.process.ChoiceDefense;
+import com.example.rpg2.util.battle.ChoiceDefense;
 
 public class AutoDefense implements StartSkill{
 	

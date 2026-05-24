@@ -14,7 +14,7 @@ import com.example.rpg2.domain.MonsterData;
 import com.example.rpg2.domain.Target;
 import com.example.rpg2.dto.response.BattleRecord;
 import com.example.rpg2.domain.BattleState;
-import com.example.rpg2.process.BadStatusBefore;
+import com.example.rpg2.util.battle.BadStatusBefore;
 
 import lombok.RequiredArgsConstructor;
 

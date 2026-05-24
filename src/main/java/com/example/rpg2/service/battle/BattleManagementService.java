@@ -17,7 +17,7 @@ import com.example.rpg2.dto.response.BattleRecord;
 import com.example.rpg2.domain.BattleState;
 import com.example.rpg2.entity.Magic;
 import com.example.rpg2.entity.Skill;
-import com.example.rpg2.process.TurnOrderCreate;
+import com.example.rpg2.util.battle.TurnOrderCreate;
 
 @Service
 public class BattleManagementService  {

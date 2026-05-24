@@ -7,11 +7,11 @@ import java.util.Random;
 import com.example.rpg2.domain.AllyData;
 import com.example.rpg2.domain.MonsterData;
 import com.example.rpg2.entity.MonsterPattern;
-import com.example.rpg2.process.Awakening;
-import com.example.rpg2.process.BadStatusAlly;
-import com.example.rpg2.process.EnemyTarget;
-import com.example.rpg2.process.Funeral;
-import com.example.rpg2.process.IsDefense;
+import com.example.rpg2.util.battle.Awakening;
+import com.example.rpg2.util.battle.BadStatusAlly;
+import com.example.rpg2.util.battle.EnemyTarget;
+import com.example.rpg2.service.battle.Funeral;
+import com.example.rpg2.util.battle.IsDefense;
 
 import lombok.Data;
 

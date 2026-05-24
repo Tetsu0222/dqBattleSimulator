@@ -1,4 +1,4 @@
-package com.example.rpg2.process;
+package com.example.rpg2.service.battle;
 
 import java.util.ArrayList;
 import java.util.HashSet;

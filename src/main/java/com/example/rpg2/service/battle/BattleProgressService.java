@@ -15,13 +15,13 @@ import com.example.rpg2.dto.response.BattleRecord;
 import com.example.rpg2.domain.BattleState;
 import com.example.rpg2.entity.Magic;
 import com.example.rpg2.entity.Skill;
-import com.example.rpg2.process.BadStatusBefore;
-import com.example.rpg2.process.CancelDefense;
-import com.example.rpg2.process.ChoiceDefense;
-import com.example.rpg2.process.ConsumptionMP;
-import com.example.rpg2.process.IsEndSkillStop;
-import com.example.rpg2.process.IsStartSkillStop;
-import com.example.rpg2.process.TurnOrderCreate;
+import com.example.rpg2.util.battle.BadStatusBefore;
+import com.example.rpg2.util.battle.CancelDefense;
+import com.example.rpg2.util.battle.ChoiceDefense;
+import com.example.rpg2.util.battle.ConsumptionMP;
+import com.example.rpg2.util.battle.IsEndSkillStop;
+import com.example.rpg2.util.battle.IsStartSkillStop;
+import com.example.rpg2.util.battle.TurnOrderCreate;
 import com.example.rpg2.status.Confusion;
 
 @Slf4j

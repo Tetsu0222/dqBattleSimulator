@@ -6,8 +6,8 @@ import com.example.rpg2.action.TaregetEnemyAction;
 import com.example.rpg2.domain.AllyData;
 import com.example.rpg2.domain.MonsterData;
 import com.example.rpg2.entity.Magic;
-import com.example.rpg2.process.Funeral;
-import com.example.rpg2.process.IsDefense;
+import com.example.rpg2.service.battle.Funeral;
+import com.example.rpg2.util.battle.IsDefense;
 
 import lombok.Data;
 

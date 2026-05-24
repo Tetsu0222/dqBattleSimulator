@@ -13,7 +13,7 @@ import com.example.rpg2.domain.BattleState;
 import com.example.rpg2.domain.EnemyBuildResult;
 import com.example.rpg2.dto.response.MonsterSummary;
 import com.example.rpg2.domain.PartyBuildResult;
-import com.example.rpg2.process.CreateCharacterSet;
+import com.example.rpg2.service.battle.CreateCharacterSet;
 import com.example.rpg2.repository.AllyRepository;
 import com.example.rpg2.repository.MonsterRepository;
 import com.example.rpg2.service.battle.BattleManagementService;

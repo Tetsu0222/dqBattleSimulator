@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.example.rpg2.dto.response.BattleRecord;
 import com.example.rpg2.domain.BattleState;
 import com.example.rpg2.service.battle.BattleProgressService;
-import com.example.rpg2.process.TurnQueue;
+import com.example.rpg2.util.battle.TurnQueue;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
