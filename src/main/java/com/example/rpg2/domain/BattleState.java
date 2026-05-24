@@ -37,4 +37,7 @@ public class BattleState {
 
 	//素早さ順に行動するキャラクターの座標を保持するキュー。ターン進行に伴い消費される
 	private Queue<Integer> turnQueue;
+
+	//現在行動中のキャラクターの座標。judgePossible で確定し startBattleSetting で参照する
+	private Integer currentActor;
 }

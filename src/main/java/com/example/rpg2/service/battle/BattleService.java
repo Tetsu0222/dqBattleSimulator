@@ -76,7 +76,8 @@ public class BattleService {
             throw new IllegalArgumentException("BattleRecord and BattleState cannot be null");
         }
 
-        Integer actionObj = battleState.getTurnQueue().poll();
+        // judgePossible で確定した行動者を参照（再度キューを消費しない）
+        Integer actionObj = battleState.getCurrentActor();
         battleProgressService.startBattle(actionObj, battleRecord, battleState);
     }
 

@@ -257,6 +257,7 @@ public class BattleProgressService {
 
 			//生存していれば処理実行
 			}else{
+				battleState.setCurrentActor( actionObj );
 				possible = true;
 			}
 
@@ -285,6 +286,7 @@ public class BattleProgressService {
 
 			//生存していれば処理実行
 			}else{
+				battleState.setCurrentActor( actionObj );
 				possible = true;
 			}
 		}
