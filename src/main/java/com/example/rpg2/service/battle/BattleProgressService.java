@@ -204,28 +204,30 @@ public class BattleProgressService {
 	//------------------------------------------------------
 	//素早さ順で行動処理を実行させるメソッド
 	//------------------------------------------------------
-	public boolean turnAction( BattleRecord battleRecord , BattleState battleState , Integer actionObj , Queue<Integer> turnqueue) {
+	@SuppressWarnings("null")
+	public boolean turnAction( BattleRecord battleRecord , BattleState battleState , Integer actionObj) {
 
         // 【暫定実装】
         // 本来 null が渡されることは想定外だが、防御的に false (ターン終了扱い) を返している。
         // 「ログ出力 + 例外スロー」「Controller側での集約ハンドリング」など、
         // 適切なエラーハンドリングは Controller のリファクタリング時に併せて設計する。
         // それまでの間、この経路に到達した場合は警告ログを出力する。
-		if( battleRecord == null || battleState == null || actionObj == null || turnqueue == null) {
+		if( battleRecord == null || battleState == null || actionObj == null || battleState.getTurnQueue() == null) {
             log.warn("turnAction received null argument. battleRecord={}, battleState={}, actionObj={}, turnqueue={}",
-                     battleRecord, battleState, actionObj, turnqueue);
+                     battleRecord, battleState, actionObj, battleState.getTurnQueue());
             return false;
         }
 
         //ターン終了判定
-        return this.isPossible( battleRecord , battleState , actionObj , turnqueue );
+        return this.isPossible( battleRecord , battleState , actionObj );
 	}
 
 	//-----------------------------------------------------
 	//ターン継続判定を行うメソッド
 	//再帰的に処理し、falseを返すとターン終了させる。
 	//-----------------------------------------------------
-	private boolean isPossible( BattleRecord battleRecord , BattleState battleState , Integer actionObj , Queue<Integer> turnqueue ) {
+	@SuppressWarnings("null")
+	private boolean isPossible( BattleRecord battleRecord , BattleState battleState , Integer actionObj) {
 
 		boolean possible = false;
 
@@ -236,11 +238,11 @@ public class BattleProgressService {
 			if( battleRecord.partyMap().get( actionObj ).getSurvival() == 0 ) {
 
 				//行動対象者が死亡している場合は、該当インデックスを次の行動対象者で上書き
-				if( turnqueue.peek() != null ) {
-					actionObj = turnqueue.poll();
+				if( battleState.getTurnQueue().peek() != null ) {
+					actionObj = battleState.getTurnQueue().poll();
 
 					//次の行動対象者も生存チェックを実行
-					if( this.isPossible( battleRecord , battleState , actionObj , turnqueue)) {
+					if( this.isPossible( battleRecord , battleState , actionObj )) {
 						possible = true;
 
 					//自メソッドを繰り返し、結果的に値がなくなっていればターン終了判定(false)を返す。
@@ -264,11 +266,11 @@ public class BattleProgressService {
 			if( battleRecord.monsterDataMap().get( actionObj ).getSurvival() == 0 ) {
 
 				//行動対象者が死亡している場合は、該当インデックスを次の行動対象者で上書き
-				if( turnqueue.peek() != null ) {
-					actionObj = turnqueue.poll();
+				if( battleState.getTurnQueue().peek() != null ) {
+					actionObj = battleState.getTurnQueue().poll();
 
 					//次の行動対象者も生存チェックを実行
-					if( this.isPossible( battleRecord , battleState , actionObj , turnqueue)) {
+					if( this.isPossible( battleRecord , battleState , actionObj)) {
 						possible = true;
 
 					//自メソッドを繰り返し、結果的に値がなくなっていればターン終了判定(false)を返す。

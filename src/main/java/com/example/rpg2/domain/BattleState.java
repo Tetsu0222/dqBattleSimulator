@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.Set;
 
 import lombok.Data;
@@ -33,4 +34,7 @@ public class BattleState {
 
 	//経過ターン数
 	private int turnCount = 1;
+
+	//素早さ順に行動するキャラクターの座標を保持するキュー。ターン進行に伴い消費される
+	private Queue<Integer> turnQueue;
 }
