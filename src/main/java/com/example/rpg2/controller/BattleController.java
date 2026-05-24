@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.rpg2.battle.Battle;
-import com.example.rpg2.battle.BattleProgressService;
+import com.example.rpg2.service.battle.BattleProgressService;
 import com.example.rpg2.process.TurnQueue;
 
 import jakarta.servlet.http.HttpSession;

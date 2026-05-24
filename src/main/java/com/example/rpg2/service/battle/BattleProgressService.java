@@ -1,7 +1,10 @@
-package com.example.rpg2.battle;
+package com.example.rpg2.service.battle;
 
 import java.util.Queue;
 import lombok.extern.slf4j.Slf4j;
+
+import com.example.rpg2.battle.Battle;
+
 @Slf4j
 public class BattleProgressService {
 

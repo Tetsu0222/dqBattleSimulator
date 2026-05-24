@@ -5,7 +5,7 @@ import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.BeforeEach;
 
 import com.example.rpg2.battle.Battle;
-import com.example.rpg2.battle.BattleProgressService;
+import com.example.rpg2.service.battle.BattleProgressService;
 
 public class BattleProgressServiceTest {
 

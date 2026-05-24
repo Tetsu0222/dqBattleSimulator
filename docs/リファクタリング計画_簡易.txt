@@ -1,6 +1,3 @@
 # やることリスト
 ## 魔法と特技のコントローラーのビジネスロジックをサービスクラスへ寄せる。
 
-## battle
-L57, L81, L101, L105, L117: Locale の @NonNull 変換に関する null 安全性の警告
-L76: Queue<Integer> への unchecked cast の警告（session.getAttribute(...) の戻り値が Object のため）
