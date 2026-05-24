@@ -32,6 +32,7 @@ public class CreateCharacterSet {
 	private final SkillRepository skillRepository;
 
 	//プレイアブルキャラクターを生成、名前の加工を行うメソッド
+	@SuppressWarnings("null")
 	public PartyBuildResult createPartySet( List<Integer> repositoryIdList ){
 
 		//名前区別用のコレクション
