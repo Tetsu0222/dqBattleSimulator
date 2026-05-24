@@ -135,6 +135,9 @@ src/main/java/com/example/rpg2/
 
 # テスト実行
 ./gradlew test
+
+# テスト結果
+build/reports/tests/test/index.html
 ```
 
 DB接続情報は `src/main/resources/application.properties` を参照。
