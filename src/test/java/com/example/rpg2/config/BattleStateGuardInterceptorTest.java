@@ -4,18 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.lang.NonNull;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 
 import com.example.rpg2.domain.BattleState;
-
+@SuppressWarnings("null")
 class BattleStateGuardInterceptorTest {
 
     private BattleStateGuardInterceptor interceptor;
-    @NonNull private MockHttpServletRequest  request  = new MockHttpServletRequest();
-    @NonNull private MockHttpServletResponse response = new MockHttpServletResponse();
+    private MockHttpServletRequest  request;
+    private MockHttpServletResponse response;
 
     @BeforeEach
     void setUp() {

@@ -65,12 +65,4 @@ class DefenseControllerTest {
         // 同じインスタンス同時か比較している。
         assertThat(session.getAttribute(BattleStateKey)).isSameAs(state);
     }
-
-    /*
-    4. 異常系・エッジケース
-    defense_セッションにbattleStateが存在しない場合_nullがサービスに渡される。
-    session が空のとき、現状コードは null チェックせずサービスを呼ぶ。
-    これを「仕様」として固定するか、防御的コードを追加すべきか判断する観点。
-     → 現状の挙動を確定させるテストにするなら、verify で第2引数が null で呼ばれることを確認。
-    */
 }
