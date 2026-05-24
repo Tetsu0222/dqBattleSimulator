@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.example.rpg2.battle.Battle;
+import com.example.rpg2.dto.BattleState;
+import com.example.rpg2.service.battle.BattleManagementService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -14,20 +15,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DefenseController {
 
+    private final BattleManagementService battleManagementService;
+
     // 定数
-    private final String BattleScreen = "battle";
-    private final String BattleObject = "battle";
+    private final String BattleScreen    = "battle";
+    private final String BattleStateKey  = "battleState";
 
     // 防御を選択
     @GetMapping("/defense/{myKey}")
     public ModelAndView defense(@PathVariable int myKey,
                                 ModelAndView mv, HttpSession session) {
         mv.setViewName(BattleScreen);
-        Battle battle = (Battle) session.getAttribute(BattleObject);
+        BattleState battleState = (BattleState) session.getAttribute(BattleStateKey);
 
-        battle.selectionDefense(myKey);
+        battleManagementService.selectionDefense(myKey, battleState);
 
-        session.setAttribute(BattleObject, battle);
+        session.setAttribute(BattleStateKey, battleState);
         return mv;
     }
 }

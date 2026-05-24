@@ -10,7 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.example.rpg2.battle.Battle;
+import com.example.rpg2.dto.BattleRecord;
+import com.example.rpg2.dto.BattleState;
 import com.example.rpg2.service.battle.BattleProgressService;
 import com.example.rpg2.process.TurnQueue;
 
@@ -22,10 +23,12 @@ import lombok.RequiredArgsConstructor;
 public class BattleController {
 
     private final MessageSource messageSource;
+    private final BattleProgressService battleProgressService;
 
     // 定数
     private final String BattleScreen    = "battle";
-    private final String BattleObject    = "battle";
+    private final String BattleRecordKey = "battleRecord";
+    private final String BattleStateKey  = "battleState";
     private final String TurnProgression = "battle";
     private final String ScreenMode      = "mode";
     private final String TurnEnd         = "end";
@@ -44,28 +47,29 @@ public class BattleController {
     public ModelAndView start(ModelAndView mv, Locale locale, HttpSession session) {
         // いつもの処理
         mv.setViewName(BattleScreen);
-        Battle battle = (Battle) session.getAttribute(BattleObject);
+        BattleRecord battleRecord = (BattleRecord) session.getAttribute(BattleRecordKey);
+        BattleState  battleState  = (BattleState)  session.getAttribute(BattleStateKey);
 
         // 前回までのログを消去
-        battle.getMesageList().clear();
+        battleState.getMesageList().clear();
 
         // 各キャラクターの行動順を規定
-        battle.turn();
+        battleProgressService.turn(battleRecord, battleState);
 
         // 各キャラクターの座標を素早さが高い順（降順）でソートしたリストを取得
-        List<Entry<Integer, Integer>> turnList = battle.getTurnList();
+        List<Entry<Integer, Integer>> turnList = battleState.getTurnList();
 
         // 素早さで順でソートされたリストから、各キャラクターの座標だけ抽出してキューへ格納
         // このキューを用いて具体的な戦闘処理を実施する。
         Queue<Integer> turnqueue = TurnQueue.getTurnQueue(turnList);
 
         // ターンの最初に発動する効果を処理
-        battle.startSkill();
-        battle.getMesageList().add(battle.getTurnCount() + getMessage("turn.start", locale));
+        battleProgressService.startSkill(battleRecord, battleState);
+        battleState.getMesageList().add(battleState.getTurnCount() + getMessage("turn.start", locale));
 
-        session.setAttribute(BattleObject, battle);
-        session.setAttribute(ScreenMode,   TurnProgression);
-        session.setAttribute("turnqueue",  turnqueue);
+        session.setAttribute(BattleStateKey, battleState);
+        session.setAttribute(ScreenMode,    TurnProgression);
+        session.setAttribute("turnqueue",   turnqueue);
         return mv;
     }
 
@@ -75,58 +79,58 @@ public class BattleController {
     public ModelAndView next(ModelAndView mv, Locale locale, HttpSession session) {
         // いつもの処理
         mv.setViewName(BattleScreen);
-        Battle battle = (Battle) session.getAttribute(BattleObject);
+        BattleRecord battleRecord = (BattleRecord) session.getAttribute(BattleRecordKey);
+        BattleState  battleState  = (BattleState)  session.getAttribute(BattleStateKey);
 
         // 前回までのログを消去
-        battle.getMesageList().clear();
+        battleState.getMesageList().clear();
 
         // キューを取得
         Queue<Integer> turnqueue = (Queue<Integer>) session.getAttribute("turnqueue");
 
         if (turnqueue.peek() == null) {
             // ターン終了時に発動する処理
-            battle.endSkill();
-            battle.getMesageList().add(battle.getTurnCount() + getMessage("turn.end", locale));
-            battle.setTurnCount(battle.getTurnCount() + 1);
+            battleProgressService.endSkill(battleRecord, battleState);
+            battleState.getMesageList().add(battleState.getTurnCount() + getMessage("turn.end", locale));
+            battleState.setTurnCount(battleState.getTurnCount() + 1);
 
-            session.setAttribute(BattleObject, battle);
-            session.setAttribute(ScreenMode,   TurnEnd);
+            session.setAttribute(BattleStateKey, battleState);
+            session.setAttribute(ScreenMode,    TurnEnd);
             return mv;
         }
 
         // 素早さ順に行動
         Integer actionObj = turnqueue.poll();
-        BattleProgressService battleProgressService = new BattleProgressService();
-        boolean possible = battleProgressService.turnAction(battle, actionObj, turnqueue);
+        boolean possible = battleProgressService.turnAction(battleRecord, battleState, actionObj, turnqueue);
 
         // ターン終了判定
         if (possible) {
             // 判定結果trueであれば行動実行
-            battle.startBattle(actionObj);
+            battleProgressService.startBattle(actionObj, battleRecord, battleState);
 
             // 戦闘終了判定
-            if (battle.getTargetSetAlly().size() == 0) {
-                battle.getMesageList().add(getMessage("lose.message", locale));
-                session.setAttribute(BattleObject, battle);
-                session.setAttribute(ScreenMode,   BattleResult);
-            } else if (battle.getTargetSetEnemy().size() == 0) {
-                battle.getMesageList().add(getMessage("win.message", locale));
-                session.setAttribute(BattleObject, battle);
-                session.setAttribute(ScreenMode,   BattleResult);
+            if (battleState.getTargetSetAlly().size() == 0) {
+                battleState.getMesageList().add(getMessage("lose.message", locale));
+                session.setAttribute(BattleStateKey, battleState);
+                session.setAttribute(ScreenMode,    BattleResult);
+            } else if (battleState.getTargetSetEnemy().size() == 0) {
+                battleState.getMesageList().add(getMessage("win.message", locale));
+                session.setAttribute(BattleStateKey, battleState);
+                session.setAttribute(ScreenMode,    BattleResult);
             } else {
-                session.setAttribute(BattleObject, battle);
-                session.setAttribute(ScreenMode,   TurnProgression);
+                session.setAttribute(BattleStateKey, battleState);
+                session.setAttribute(ScreenMode,    TurnProgression);
             }
 
         // 全員の行動が終了
         } else {
             // ターン終了時に発動する処理
-            battle.endSkill();
-            battle.getMesageList().add(battle.getTurnCount() + getMessage("turn.end", locale));
-            battle.setTurnCount(battle.getTurnCount() + 1);
+            battleProgressService.endSkill(battleRecord, battleState);
+            battleState.getMesageList().add(battleState.getTurnCount() + getMessage("turn.end", locale));
+            battleState.setTurnCount(battleState.getTurnCount() + 1);
 
-            session.setAttribute(BattleObject, battle);
-            session.setAttribute(ScreenMode,   TurnEnd);
+            session.setAttribute(BattleStateKey, battleState);
+            session.setAttribute(ScreenMode,    TurnEnd);
         }
         return mv;
     }
@@ -136,10 +140,8 @@ public class BattleController {
     public ModelAndView end(ModelAndView mv, HttpSession session) {
         // いつもの処理
         mv.setViewName(BattleScreen);
-        Battle battle = (Battle) session.getAttribute(BattleObject);
 
-        session.setAttribute(BattleObject, battle);
-        session.setAttribute(ScreenMode,   BeforeTurn);
+        session.setAttribute(ScreenMode, BeforeTurn);
         return mv;
     }
 }

@@ -1,0 +1,148 @@
+## 要点（今後の学習トピック）
+
+- 解決策は `@Primary` でデフォルトを指定するか、`@Qualifier("beanName")` で明示的に指定する
+- `finalize()` がなぜ危険なのか　⇒　Java 9で非推奨、現代ではほぼ使わない
+- Spring のシャットダウンフックの仕組み　⇒　JVMのShutdownHookとの関係
+- HikariCP や ExecutorService の終了処理の内部　⇒　コネクションリーク防止の実務知識
+- `@PreDestroy` が呼ばれないケース（実はある）
+- Web アプリの「優雅なシャットダウン」の仕組み　⇒　Spring Boot Actuatorのshutdown、server.shutdown=graceful
+
+題材設計の原則
+最初に方針を固めておきます：
+
+既存のdqBattleSimulatorに組み込めるものを選ぶ → 学習用コードを別で書くと続かない
+「動くけど壊れている」を体験できるもの → 教科書だけだと頭に残らない
+再現可能な実験ができる → ログで挙動を確認できる
+各トピックの題材提案
+1. @PreDestroy が呼ばれないケース（優先度：高）
+題材：バトルログ書き込み用のFileWriterリソース
+
+
+BattleLogger という @Component を作る
+  - @PostConstruct で FileWriter を開く
+  - @PreDestroy で flush + close する
+苦しむ実験リスト：
+
+実験	期待される気づき
+普通に Ctrl+C で止める	@PreDestroy が呼ばれる
+kill -9 <pid> で殺す	呼ばれない → ファイル末尾が欠ける
+System.exit(0) で抜ける	呼ばれる
+Runtime.getRuntime().halt(0) で抜ける	呼ばれない
+prototype スコープで作る	そもそも呼ばれない（Springが破棄管理しない）
+try 内で throw new Error()	JVMの挙動次第
+これを実際に手を動かして「あれ、なんでログが消える？」と苦しむのが学習の核です。
+
+2. Webアプリの優雅なシャットダウン（優先度：高）
+題材：バトル処理が長時間かかるエンドポイント
+
+
+@PostMapping("/battle/long")
+public String longBattle() throws InterruptedException {
+    Thread.sleep(30_000);  // 30秒かかるバトル
+    return "完了";
+}
+苦しむ実験リスト：
+
+デフォルト設定で、バトル開始 → 5秒後にサーバー停止 → クライアントに何が返るか観察
+application.yml に server.shutdown=graceful を追加 → 再実験
+spring.lifecycle.timeout-per-shutdown-phase=10s で更に挙動を変える
+タイムアウトより長い処理が走ってる場合、最終的にどうなるか
+気づきポイント：「優雅」とは何が優雅なのか、なぜデフォルトが優雅じゃないのか、本番運用で何が起きるか。
+
+3. HikariCP の終了処理（優先度：中）
+題材：DBコネクションの取り合い
+
+dqBattleSimulatorにDB接続があれば、以下を試せます：
+
+
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 3
+      leak-detection-threshold: 2000
+苦しむ実験リスト：
+
+わざと Connectionを閉じ忘れるコードを書く → ログに「Connection leak detected」が出るのを観察
+4並列でリクエストを投げる → どう詰まるかを観察
+アプリ停止時に処理中のクエリがあったらどうなるか
+connection-timeout を超短くして、わざとタイムアウトを起こす
+4. Spring のシャットダウンフック（優先度：中）
+題材：JVMのShutdownHookと@PreDestroyの順序
+
+
+@PostConstruct
+public void init() {
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+        System.out.println("[ShutdownHook] 実行");
+    }));
+}
+
+@PreDestroy
+public void destroy() {
+    System.out.println("[@PreDestroy] 実行");
+}
+苦しむ実験：
+
+どっちが先に呼ばれる？
+Springのシャットダウン中に新しいリクエストが来たら？
+@PreDestroy内で例外を投げたら他のBeanの破棄はどうなる？
+5. finalize() がなぜ危険なのか（優先度：低）
+題材は不要、コード書いて挙動見るだけでOK
+
+
+public class DangerousResource {
+    @Override
+    protected void finalize() throws Throwable {
+        System.out.println("finalize called");
+    }
+}
+苦しむ実験：
+
+1万個生成して捨てる → 何個finalizeされるかカウント
+System.gc() を呼ぶ → 全部呼ばれるか？
+JVMを -Xmx32m で動かして OOM 寸前まで作る → 呼ばれるタイミングが予測できないことを体感
+優先度低の理由：Java 9で非推奨、Java 18で完全に削除されるからもう使わない。教養として「なぜ消えたか」を理解する目的でOK。
+
+学習メモの構成テンプレ
+苦しんだ記録を後から見返せるように、こんなテンプレで残すのを推奨します：
+
+
+## トピック名
+
+### 仮説（実験前に書く）
+こうなるはず、と思った予測
+
+### 実験
+- 環境：
+- コード：
+- 実行手順：
+
+### 結果
+実際の出力やログ
+
+### 仮説とのズレ
+予測と結果の差分
+
+### なぜそうなったか（原因の追求）
+ソースコードや仕様書を読んだ結果
+
+### 学び（一行で）
+未来の自分への一行メモ
+「仮説 → 実験 → ズレ → 原因 → 学び」のサイクルが、丸暗記より10倍記憶に残ります。
+
+進め方の提案
+優先度順にこういう順番でやると、効率がいいです：
+
+@PreDestroyが呼ばれないケース → これが一番「えっ」となる実験が多い
+優雅なシャットダウン → 1の延長で自然につながる
+HikariCP → DB絡みは実務で必須
+ShutdownHook → 1〜3を理解した後だと深く理解できる
+finalize() → 教養として最後に
+最初は 1のFileWriter題材 からやるのを強くおすすめします。結果がファイルの中身として目に見えて分かるので、苦しんだ甲斐が体感しやすいです。
+
+一つだけ補足
+「悩みたい・苦しみたい」と本人が言える時点で、伸びる人の特徴です。多くの人は「答えが知りたい」「最短ルートが欲しい」と言うので。
+
+ただし、3日以上1人で詰まったら聞いてください。詰まりすぎると学習効率が落ちるので、「苦しむ時間」と「答え合わせ」のバランスは意識した方がいいです。デバッグの筋肉は3日以内で十分つきます。
+
+題材リストをDI.mdの「要点」セクションに統合しますか？それとも別ファイル（例：docs/study/DI_homework.md）に切り出しますか？

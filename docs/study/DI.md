@@ -162,8 +162,8 @@ Spring AOP は 2 種類の Proxy を使う。
 
 ### 自己呼び出し問題（self-invocation）
 
-メソッド内で自己別メソッドを呼び出すと `this.inner()` になり、Proxy を経由しない。
-だから AOP の横取りが発動しない。
+同じクラス内のメソッドを呼び出すと this.inner() になり、Proxy を経由しない。
+Proxy が横取りできるのは「外部からの呼び出し」だけなので、内部呼び出しでは AOP が発動しない。
 
 ### AOPのタイミング
 
@@ -216,12 +216,3 @@ Spring が管理対象として認識し、ライフサイクル（生成・初�
 - `session`（Web アプリ）
 
 ---
-
-## 要点（今後の学習トピック）
-
-- 解決策は `@Primary` でデフォルトを指定するか、`@Qualifier("beanName")` で明示的に指定する
-- `finalize()` がなぜ危険なのか
-- Spring のシャットダウンフックの仕組み
-- HikariCP や ExecutorService の終了処理の内部
-- `@PreDestroy` が呼ばれないケース（実はある）
-- Web アプリの「優雅なシャットダウン」の仕組み

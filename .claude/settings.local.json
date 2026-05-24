@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(./mvnw -q -DskipTests compile)",
-      "PowerShell(& 'c:\\\\Users\\\\root2\\\\OneDrive\\\\�f�X�N�g�b�v\\\\dqBattleSimulator\\\\gradlew.bat' -p 'c:\\\\Users\\\\root2\\\\OneDrive\\\\�f�X�N�g�b�v\\\\dqBattleSimulator' compileJava -q 2>&1)"
+      "PowerShell(& 'c:\\\\Users\\\\root2\\\\OneDrive\\\\�f�X�N�g�b�v\\\\dqBattleSimulator\\\\gradlew.bat' -p 'c:\\\\Users\\\\root2\\\\OneDrive\\\\�f�X�N�g�b�v\\\\dqBattleSimulator' compileJava -q 2>&1)",
+      "Bash(./gradlew compileJava -q)",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(./gradlew compileJava compileTestJava -q)"
     ]
   }
 }

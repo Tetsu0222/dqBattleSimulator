@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.example.rpg2.battle.Battle;
+import com.example.rpg2.dto.BattleRecord;
+import com.example.rpg2.dto.BattleState;
 import com.example.rpg2.entity.Skill;
 import com.example.rpg2.repository.SkillRepository;
+import com.example.rpg2.service.battle.BattleManagementService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -20,16 +22,17 @@ import lombok.RequiredArgsConstructor;
 public class SkillController {
 
     private final SkillRepository skillRepository;
+    private final BattleManagementService battleManagementService;
 
     // すべての特技の選択画面を表示
     @GetMapping("/skill/{myKey}")
     public ModelAndView skill(@PathVariable int myKey,
                               ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
-        Battle battle = (Battle) session.getAttribute("battle");
+        BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
 
         // 発動可能な魔法一覧を表示
-        List<Skill> skillList = battle.getPartyMap().get(myKey).getSkillList();
+        List<Skill> skillList = battleRecord.partyMap().get(myKey).getSkillList();
 
         mv.addObject("skillList", skillList);
         mv.addObject("myKey", myKey);
@@ -42,10 +45,10 @@ public class SkillController {
     public ModelAndView skillA(@PathVariable int myKey,
                                ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
-        Battle battle = (Battle) session.getAttribute("battle");
+        BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
 
         // 発動可能な特技一覧を表示
-        List<Skill> skillList = battle.getPartyMap().get(myKey).getSkillList();
+        List<Skill> skillList = battleRecord.partyMap().get(myKey).getSkillList();
         List<Skill> skillListA = skillList.stream()
                 .filter(s -> s.getCategory().equals("targetenemy"))
                 .filter(s -> s.getBuffcategory().equals("no"))
@@ -62,10 +65,10 @@ public class SkillController {
     public ModelAndView skillR(@PathVariable int myKey,
                                ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
-        Battle battle = (Battle) session.getAttribute("battle");
+        BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
 
         // 発動可能な特技一覧を表示
-        List<Skill> skillList = battle.getPartyMap().get(myKey).getSkillList();
+        List<Skill> skillList = battleRecord.partyMap().get(myKey).getSkillList();
         List<Skill> skillListA = skillList.stream()
                 .filter(s -> s.getCategory().equals("targetally") || s.getCategory().equals("resuscitationskill"))
                 .filter(s -> s.getBuffcategory().equals("no"))
@@ -82,10 +85,10 @@ public class SkillController {
     public ModelAndView skillB(@PathVariable int myKey,
                                ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
-        Battle battle = (Battle) session.getAttribute("battle");
+        BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
 
         // 発動可能な特技一覧を表示
-        List<Skill> skillList = battle.getPartyMap().get(myKey).getSkillList();
+        List<Skill> skillList = battleRecord.partyMap().get(myKey).getSkillList();
         List<Skill> skillListA = skillList.stream()
                 .filter(s -> s.getCategory().equals("targetenemy"))
                 .filter(s -> !s.getBuffcategory().equals("no"))
@@ -102,10 +105,10 @@ public class SkillController {
     public ModelAndView skillD(@PathVariable int myKey,
                                ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
-        Battle battle = (Battle) session.getAttribute("battle");
+        BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
 
         // 発動可能な特技一覧を表示
-        List<Skill> skillList = battle.getPartyMap().get(myKey).getSkillList();
+        List<Skill> skillList = battleRecord.partyMap().get(myKey).getSkillList();
         List<Skill> skillListA = skillList.stream()
                 .filter(s -> s.getCategory().equals("targetenemy"))
                 .filter(s -> !s.getBuffcategory().equals("no"))
@@ -122,7 +125,8 @@ public class SkillController {
     public ModelAndView skill2(@PathVariable int id, @PathVariable int myKey,
                                ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
-        Battle battle = (Battle) session.getAttribute("battle");
+        BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
+        BattleState  battleState  = (BattleState)  session.getAttribute("battleState");
         Skill skill = skillRepository.findById(id).get();
 
         // 単体かつ攻撃と妨害以外→対象選択の範囲を味方に指定
@@ -142,13 +146,13 @@ public class SkillController {
 
         // 味方全体への特技
         } else if (!skill.getRange().equals("single") && skill.getCategory().equals("targetally")) {
-            battle.selectionAllySkill(myKey, skill);
+            battleManagementService.selectionAllySkill(myKey, skill, battleRecord, battleState);
             session.setAttribute("mode", "log");
             session.setAttribute("skill", skill);
 
         // 敵全体への特技
         } else if (!skill.getRange().equals("single") && skill.getCategory().equals("targetenemy")) {
-            battle.selectionMonsterSkill(myKey, skill);
+            battleManagementService.selectionMonsterSkill(myKey, skill, battleRecord, battleState);
             session.setAttribute("mode", "log");
             session.setAttribute("skill", skill);
 
@@ -158,12 +162,12 @@ public class SkillController {
                 session.setAttribute("mode", "targetDeathAllySkill");
                 session.setAttribute("skill", skill);
             }
-            battle.selectionAllySkill(myKey, skill);
+            battleManagementService.selectionAllySkill(myKey, skill, battleRecord, battleState);
             session.setAttribute("mode", "log");
             session.setAttribute("skill", skill);
         }
 
-        session.setAttribute("battle", battle);
+        session.setAttribute("battleState", battleState);
         return mv;
     }
 
@@ -172,12 +176,13 @@ public class SkillController {
     public ModelAndView targetAlly(@PathVariable int myKey, @PathVariable int targetKey,
                                    ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
-        Battle battle = (Battle) session.getAttribute("battle");
+        BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
+        BattleState  battleState  = (BattleState)  session.getAttribute("battleState");
         Skill skill = (Skill) session.getAttribute("skill");
 
-        battle.selectionAllySkill(myKey, targetKey, skill);
+        battleManagementService.selectionAllySkill(myKey, targetKey, skill, battleRecord, battleState);
 
-        session.setAttribute("battle", battle);
+        session.setAttribute("battleState", battleState);
         session.setAttribute("mode", "log");
         return mv;
     }
@@ -187,12 +192,13 @@ public class SkillController {
     public ModelAndView skillTargetMonster(@PathVariable int myKey, @PathVariable int targetKey,
                                            ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
-        Battle battle = (Battle) session.getAttribute("battle");
+        BattleRecord battleRecord = (BattleRecord) session.getAttribute("battleRecord");
+        BattleState  battleState  = (BattleState)  session.getAttribute("battleState");
         Skill skill = (Skill) session.getAttribute("skill");
 
-        battle.selectionMonsterSkill(myKey, targetKey, skill);
+        battleManagementService.selectionMonsterSkill(myKey, targetKey, skill, battleRecord, battleState);
 
-        session.setAttribute("battle", battle);
+        session.setAttribute("battleState", battleState);
         session.setAttribute("mode", "log");
         return mv;
     }
@@ -203,12 +209,12 @@ public class SkillController {
                                                 @PathVariable int myKey,
                                                 ModelAndView mv, HttpSession session) {
         mv.setViewName("battle");
-        Battle battle = (Battle) session.getAttribute("battle");
+        BattleState battleState = (BattleState) session.getAttribute("battleState");
         Skill skill = (Skill) session.getAttribute("skill");
 
-        battle.selectionMonsterSkill(name, myKey, skill);
+        battleManagementService.selectionMonsterSkill(name, myKey, skill, battleState);
 
-        session.setAttribute("battle", battle);
+        session.setAttribute("battleState", battleState);
         session.setAttribute("mode", "log");
         return mv;
     }

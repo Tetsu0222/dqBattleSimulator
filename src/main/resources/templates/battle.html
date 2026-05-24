@@ -7,7 +7,7 @@
 	<body>
 		<!-- エネミーゾーン -->
 		<h3 th:text="#{enemy.name}"></h3>
-		<h3 th:each="entry:${session.battle.monsterDataMap}">
+		<h3 th:each="entry:${session.battleRecord.monsterDataMap}">
 			<div th:unless="${entry.value.survival == 0}">
 				<a th:text="${entry.value.name}"></a>
 				<!-- 以下はテスト処理のため表示 -->
@@ -34,7 +34,7 @@
 				<th>選択中の行動</th>
 				<th>対象</th>
 			</tr>
-			<tr th:each="entry:${session.battle.partyMap}">
+			<tr th:each="entry:${session.battleRecord.partyMap}">
 				<td>
 					<a th:text="${entry.value.name}"></a>
 				</td>
@@ -80,17 +80,17 @@
 					</div>
 				</div>
 				<td>
-					<a th:text="${session.battle.targetMap.get(entry.key).skillName}"></a>
+					<a th:text="${session.battleState.targetMap.get(entry.key).skillName}"></a>
 				</td>
 				<td>
-					<a th:text="${session.battle.targetMap.get(entry.key).selectionName}"></a>
+					<a th:text="${session.battleState.targetMap.get(entry.key).selectionName}"></a>
 				</td>
 			</tr>
 		</table>
 		<!-- プレイヤーゾーンはここまで -->
 		<!-- メッセージ表示エリア -->
 		<div th:if="${session.mode == 'battle'}">
-			<ul th:each="me:${session.battle.mesageList}">
+			<ul th:each="me:${session.battleState.mesageList}">
 				<li>
 					<a th:text="${me}"></a>
 				</li>
@@ -103,7 +103,7 @@
 			</form>
 		</div>
 		<div th:if="${session.mode == 'end'}">
-			<ul th:each="me:${session.battle.mesageList}">
+			<ul th:each="me:${session.battleState.mesageList}">
 				<li>
 					<a th:text="${me}"></a>
 				</li>
@@ -228,7 +228,7 @@
 					<tr>
 						<th>対象選択</th>
 					</tr>
-					<tr th:each="entry:${session.battle.monsterDataMap}">
+					<tr th:each="entry:${session.battleRecord.monsterDataMap}">
 						<td th:unless="${entry.value.survival == 0}">
 							<a th:href="@{/target/attack/monster/__${myKey}__/__${entry.key}__}" th:text="${entry.value.name}"></a>
 						</td>
@@ -243,7 +243,7 @@
 					<tr>
 						<th>対象選択</th>
 					</tr>
-					<tr th:each="entry:${session.battle.partyMap}">
+					<tr th:each="entry:${session.battleRecord.partyMap}">
 						<td th:unless="${entry.value.survival == 0}">
 							<a th:href="@{/target/magic/ally/__${myKey}__/__${entry.key}__}" th:text="${entry.value.name}"></a>
 						</td>
@@ -257,7 +257,7 @@
 					<tr>
 						<th>対象選択</th>
 					</tr>
-					<tr th:each="entry:${session.battle.partyMap}">
+					<tr th:each="entry:${session.battleRecord.partyMap}">
 						<td th:if="${entry.value.survival == 0}">
 							<a th:href="@{/target/magic/ally/__${myKey}__/__${entry.key}__}" th:text="${entry.value.name}"></a>
 						</td>
@@ -272,7 +272,7 @@
 					<tr>
 						<th>対象選択</th>
 					</tr>
-					<tr th:each="entry:${session.battle.monsterDataMap}">
+					<tr th:each="entry:${session.battleRecord.monsterDataMap}">
 						<td th:unless="${entry.value.survival == 0}">
 							<a th:href="@{/target/magic/monster/__${myKey}__/__${entry.key}__}" th:text="${entry.value.name}"></a>
 						</td>
@@ -286,7 +286,7 @@
 					<tr>
 						<th>対象選択</th>
 					</tr>
-					<tr th:each="name:${session.battle.enemyNameList}">
+					<tr th:each="name:${session.battleState.enemyNameList}">
 						<td>
 							<a th:href="@{/target/magic/monsterGroup/__${name}__/__${myKey}__}" th:text="${name}"></a>
 						</td>
@@ -301,7 +301,7 @@
 					<tr>
 						<th>対象選択</th>
 					</tr>
-					<tr th:each="entry:${session.battle.partyMap}">
+					<tr th:each="entry:${session.battleRecord.partyMap}">
 						<td th:unless="${entry.value.survival == 0}">
 							<a th:href="@{/target/skill/ally/__${myKey}__/__${entry.key}__}" th:text="${entry.value.name}"></a>
 						</td>
@@ -315,7 +315,7 @@
 					<tr>
 						<th>対象選択</th>
 					</tr>
-					<tr th:each="entry:${session.battle.partyMap}">
+					<tr th:each="entry:${session.battleRecord.partyMap}">
 						<td th:if="${entry.value.survival == 0}">
 							<a th:href="@{/target/skill/ally/__${myKey}__/__${entry.key}__}" th:text="${entry.value.name}"></a>
 						</td>
@@ -330,7 +330,7 @@
 					<tr>
 						<th>対象選択</th>
 					</tr>
-					<tr th:each="entry:${session.battle.monsterDataMap}">
+					<tr th:each="entry:${session.battleRecord.monsterDataMap}">
 						<td th:unless="${entry.value.survival == 0}">
 							<a th:href="@{/target/skill/monster/__${myKey}__/__${entry.key}__}" th:text="${entry.value.name}"></a>
 						</td>
@@ -344,7 +344,7 @@
 					<tr>
 						<th>対象選択</th>
 					</tr>
-					<tr th:each="name:${session.battle.enemyNameList}">
+					<tr th:each="name:${session.battleState.enemyNameList}">
 						<td>
 							<a th:href="@{/target/skill/monsterGroup/__${name}__/__${myKey}__}" th:text="${name}"></a>
 						</td>
@@ -368,7 +368,7 @@
 		<div th:if="${session.mode == 'result'}">
 			<form th:action="@{/}" method="get">
 				<div>
-					<ul th:each="me:${session.battle.mesageList}">
+					<ul th:each="me:${session.battleState.mesageList}">
 						<li>
 							<a th:text="${me}"></a>
 						</li>
