@@ -3,9 +3,6 @@
 - 魔法と特技のコントローラーのビジネスロジックをサービスクラスへ寄せる。
 
 ## No2 サービスとDTOに分離
-- battle\Battle.java
-- battle\support\BattleSupportAttack.java
+残課題（次回への申し送り）
+Funeral のインスタンス／static 混在の整理 — 今回は構造そのまま移動。設計の分離はリファクタリングの別タスクとして残してあるわね。
 
-## ビューファイルの修正
-- src\main\resources\templates\index.html
-  -  th:selected="${a.id} == *{PID1}"　を削除
