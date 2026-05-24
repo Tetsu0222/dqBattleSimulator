@@ -1,0 +1,50 @@
+# 戦闘画面系コントローラのセッション欠落ガードを横断的に実装する
+
+## 発見日
+2026-05-24（DefenseControllerTest 作成中の観点洗い出しで判明）
+
+## 背景・現状の問題
+- DefenseController / MagicController / SkillController は
+  `session.getAttribute("battleState")` を取得後、null チェックせずサービスへ渡している。
+- セッションタイムアウト、ブックマーク直接アクセス、アプリ再起動後のブラウザバック等で
+  battleState が null になりうる。
+- 現状は NullPointerException で 500 エラー画面が出る。
+- 同じ問題を3コントローラが抱えており、横断的関心事として一元化する価値がある。
+
+## 提案する方針（推奨）
+HandlerInterceptor で一元ガード
+- 対象パス: /defense/**, /magic/**, /skill/**（必要に応じて追加）
+- 動作:    battleState がセッションになければ redirect:/（または専用エラー画面）
+- 設定箇所: WebMvcConfigurer#addInterceptors
+
+### 推奨理由
+- 「書き忘れる余地がない」のが最大の利点。
+  新コントローラ追加時に呼び出しを忘れる事故を構造的に防げる。
+- 横断的関心事の定石は「呼び出し側に書かせない」こと。AOP的アプローチが自然。
+- Spring 標準機能のため、後任が読んだときに迷わない。
+
+## 代替案
+### 案A: 共通サービスクラスを作って各コントローラで呼ぶ
+  例: SessionGuardService#requireBattleState(session)
+  ◎ 実装が単純 / 既存スタイルに馴染む
+  △ 呼び出しを書き忘れる余地が残る / 各コントローラ冒頭にボイラープレートが残る
+
+### 案C: カスタムアノテーション + HandlerMethodArgumentResolver
+  例: @SessionBattleState BattleState battleState を引数で受け取る
+  ◎ 最も綺麗 / セッションキーの文字列も隠蔽できる
+  △ 実装コストがやや高い / 現状のベタ書きスタイルからの飛躍が大きい
+
+## サービス側にガードを置かない理由
+- サービス層は「BattleState を受け取って処理する」のが責務。
+- 「セッション欠落時にどこへリダイレクトするか」は Web 層の関心事。
+- ただし防御的に Objects.requireNonNull(battleState) を加えるのは可。
+
+## 影響範囲
+- 対象コントローラ: DefenseController / MagicController / SkillController
+- 新規追加: Interceptor 1ファイル + Config 1ファイル
+- 既存コントローラの修正は最小（Interceptor案ならゼロ変更）
+
+## テスト観点
+- battleState が null のとき期待のリダイレクトが行われる
+- battleState がある場合は通常処理が継続する
+- 対象外パス（/, /battle 等）に影響しない
