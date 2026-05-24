@@ -13,29 +13,29 @@
 				<div class="row">
 					<div class="col-3">
 						<h4>プレイヤー1を選択してください</h4>
-							<select name="PLV1">
-								<option th:each="a : ${allyList}" th:value="${a.id}" th:text="${a.name}" th:selected="${a.id} == *{PLV}"></option>
+							<select name="PID1">
+								<option th:each="a : ${allyList}" th:value="${a.id}" th:text="${a.name}" th:selected="${a.id} == *{PID1}"></option>
 							</select>
 					</div>
 					<div class="col-3">
 						<h4>プレイヤー2を選択してください</h4>
-							<select name="PLV2">
+							<select name="PID2">
 								<option value="0"></option>
-								<option th:each="a : ${allyList}" th:value="${a.id}" th:text="${a.name}" th:selected="${a.id} == *{PLV2}"></option>
+								<option th:each="a : ${allyList}" th:value="${a.id}" th:text="${a.name}" th:selected="${a.id} == *{PID2}"></option>
 							</select>
 					</div>
 					<div class="col-3">
 						<h4>プレイヤー3を選択してください</h4>
-							<select name="PLV3">
+							<select name="PID3">
 								<option value="0"></option>
-								<option th:each="a : ${allyList}" th:value="${a.id}" th:text="${a.name}" th:selected="${a.id} == *{PLV3}"></option>
+								<option th:each="a : ${allyList}" th:value="${a.id}" th:text="${a.name}" th:selected="${a.id} == *{PID3}"></option>
 							</select>
 					</div>
 					<div class="col-3">
 						<h4>プレイヤー4を選択してください</h4>
-							<select name="PLV4">
+							<select name="PID4">
 								<option value="0"></option>
-								<option th:each="a : ${allyList}" th:value="${a.id}" th:text="${a.name}" th:selected="${a.id} == *{PLV4}"></option>
+								<option th:each="a : ${allyList}" th:value="${a.id}" th:text="${a.name}" th:selected="${a.id} == *{PID4}"></option>
 							</select>
 					</div>
 				</div>
@@ -44,29 +44,29 @@
 				<div class="row">
 					<div class="col-3">
 						<h4>敵を選んでください</h4>
-							<select name="MLV1">
-								<option th:each="m : ${enemyList}" th:value="${m.id}" th:text="${m.name}" th:selected="${m.id} == *{MLV1}"></option>
+							<select name="MID1">
+								<option th:each="m : ${enemyList}" th:value="${m.id}" th:text="${m.name}" th:selected="${m.id} == *{MID1}"></option>
 							</select>
 					</div>
 					<div class="col-3">
 						<h4>敵を選んでください</h4>
-							<select name="MLV2">
+							<select name="MID2">
 								<option value="0"></option>
-								<option th:each="m : ${enemyList}" th:value="${m.id}" th:text="${m.name}" th:selected="${m.id} == *{MLV2}"></option>
+								<option th:each="m : ${enemyList}" th:value="${m.id}" th:text="${m.name}" th:selected="${m.id} == *{MID2}"></option>
 							</select>
 					</div>
 					<div class="col-3">
 						<h4>敵を選んでください</h4>
-							<select name="MLV3">
+							<select name="MID3">
 								<option value="0"></option>
-								<option th:each="m : ${enemyList}" th:value="${m.id}" th:text="${m.name}" th:selected="${m.id} == *{MLV3}"></option>
+								<option th:each="m : ${enemyList}" th:value="${m.id}" th:text="${m.name}" th:selected="${m.id} == *{MID3}"></option>
 							</select>
 					</div>
 					<div class="col-3">
 						<h4>敵を選んでください</h4>
-							<select name="MLV4">
+							<select name="MID4">
 								<option value="0"></option>
-								<option th:each="m : ${enemyList}" th:value="${m.id}" th:text="${m.name}" th:selected="${m.id} == *{MLV4}"></option>
+								<option th:each="m : ${enemyList}" th:value="${m.id}" th:text="${m.name}" th:selected="${m.id} == *{MID4}"></option>
 							</select>	
 					</div>
 				</div>

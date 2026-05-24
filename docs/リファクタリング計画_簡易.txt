@@ -1,3 +1,11 @@
 # やることリスト
-## 魔法と特技のコントローラーのビジネスロジックをサービスクラスへ寄せる。
+## No1 ビジネスロジックをサービスクラスへ寄せる
+- 魔法と特技のコントローラーのビジネスロジックをサービスクラスへ寄せる。
 
+## No2 サービスとDTOに分離
+- battle\Battle.java
+- battle\support\BattleSupportAttack.java
+
+## ビューファイルの修正
+- src\main\resources\templates\index.html
+  -  th:selected="${a.id} == *{PID1}"　を削除

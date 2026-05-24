@@ -37,8 +37,8 @@ public class AttackController {
                                             @PathVariable int targetKey,
                                             ModelAndView mv, HttpSession session) {
         mv.setViewName(BattleScreen);
+        // TODO:Battleクラスのリファクタリング後、呼び出しメソッドを変える。
         Battle battle = (Battle) session.getAttribute(BattleObject);
-
         battle.selectionAttack(myKey, targetKey);
 
         session.setAttribute(BattleObject, battle);
